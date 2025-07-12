@@ -1,5 +1,6 @@
 package com.pqb.motor_rental.entities;
 
+import com.pqb.motor_rental.enums.RentalStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

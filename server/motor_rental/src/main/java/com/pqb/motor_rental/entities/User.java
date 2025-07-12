@@ -1,8 +1,9 @@
 package com.pqb.motor_rental.entities;
 
+import com.pqb.motor_rental.enums.AccountStatus;
+import com.pqb.motor_rental.enums.Role;
 import jakarta.persistence.*;
 
-import javax.management.relation.Role;
 import java.time.LocalDateTime;
 
 @Entity

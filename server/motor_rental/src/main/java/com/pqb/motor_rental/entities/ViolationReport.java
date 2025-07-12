@@ -1,5 +1,6 @@
 package com.pqb.motor_rental.entities;
 
+import com.pqb.motor_rental.enums.ReportStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
