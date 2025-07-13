@@ -9,4 +9,6 @@ import java.util.List;
 public interface UserService {
     List<User> getAllUsers();
     User getUserByUserId(int userId);
+    void register(User user);
+
 }
