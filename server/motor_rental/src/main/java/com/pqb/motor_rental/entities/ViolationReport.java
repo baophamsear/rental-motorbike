@@ -21,6 +21,10 @@ public class ViolationReport {
     private User reporterUser;
 
     @ManyToOne
+    @JoinColumn(name = "reviewed_by")
+    private User reviewedBy;
+
+    @ManyToOne
     @JoinColumn(name = "rental_id")
     private Rental rental;
 
@@ -30,4 +34,7 @@ public class ViolationReport {
 
     @Enumerated(EnumType.STRING)
     private ReportStatus status;
+
+    private LocalDateTime resolvedAt;
+    private String resolutionNote;
 }
