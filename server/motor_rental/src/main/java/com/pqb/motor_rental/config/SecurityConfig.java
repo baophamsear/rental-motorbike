@@ -1,5 +1,7 @@
 package com.pqb.motor_rental.config;
 
+import com.pqb.motor_rental.security.CustomLoginSuccessHandler;
+import com.pqb.motor_rental.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,8 +15,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private CustomLoginSuccessHandler customLoginSuccessHandler;
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomUserDetailsService customUserDetailsService) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/login", "/css/**").permitAll()
@@ -24,7 +28,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .usernameParameter("email")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl(customLoginSuccessHandler.toString())
                         .permitAll()
                 )
                 .logout(logout -> logout
