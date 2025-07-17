@@ -17,7 +17,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        // Cho phép các api login register của người dùng được dùng thoải mái
+                        .requestMatchers("/api/auth/**").permitAll()
+                        // Cho phép register và login của admin
                         .requestMatchers("/register", "/login", "/css/**").permitAll()
+                        // Cho phép admin cho quyền vào các đường dẫn có dạng "/**" sau khi đăng nhập
                         .requestMatchers("/**").hasRole("admin")
                         .anyRequest().authenticated()
                 )
