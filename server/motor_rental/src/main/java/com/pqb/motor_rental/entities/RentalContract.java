@@ -41,5 +41,95 @@ public class RentalContract {
     private User approvedBy;
 
     private LocalDateTime approvedAt;
+
+
+
+    public Integer getContractId() {
+        return contractId;
+    }
+
+    public void setContractId(Integer contractId) {
+        this.contractId = contractId;
+    }
+
+    public User getLessor() {
+        return lessor;
+    }
+
+    public void setLessor(User lessor) {
+        this.lessor = lessor;
+    }
+
+    public Motorbike getBike() {
+        return bike;
+    }
+
+    public void setBike(Motorbike bike) {
+        this.bike = bike;
+    }
+
+    public BigDecimal getServiceFee() {
+        return serviceFee;
+    }
+
+    public void setServiceFee(BigDecimal serviceFee) {
+        this.serviceFee = serviceFee;
+    }
+
+    public PaymentCycle getPaymentCycle() {
+        return paymentCycle;
+    }
+
+    public void setPaymentCycle(PaymentCycle paymentCycle) {
+        this.paymentCycle = paymentCycle;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public ContractStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ContractStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCancelRequestedAt() {
+        return cancelRequestedAt;
+    }
+
+    public void setCancelRequestedAt(LocalDateTime cancelRequestedAt) {
+        this.cancelRequestedAt = cancelRequestedAt;
+    }
+
+    public User getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(User approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public LocalDateTime getApprovedAt() {
+        return approvedAt;
+    }
+
+    public void setApprovedAt(LocalDateTime approvedAt) {
+        this.approvedAt = approvedAt;
+    }
 }
 

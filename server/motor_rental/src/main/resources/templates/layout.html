@@ -1,0 +1,42 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'MotorRenter'">MotorRenter</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="layout">
+
+    <!-- Sidebar (fragment để dùng lại) -->
+    <aside class="sidebar" th:fragment="sidebar">
+        <div class="logo">MotorRenter</div>
+        <ul>
+            <li><a th:href="@{/users}" th:classappend="${activePage == 'users'} ? 'active'">Users</a></li>
+            <li><a th:href="@{/tasks}" th:classappend="${activePage == 'tasks'} ? 'active'">Tasks</a></li>
+            <li><a th:href="@{/logs}" th:classappend="${activePage == 'logs'} ? 'active'">Work Logs</a></li>
+            <li><a th:href="@{/performance}" th:classappend="${activePage == 'performance'} ? 'active'">Performance</a></li>
+            <li><a th:href="@{/settings}" th:classappend="${activePage == 'settings'} ? 'active'">Settings</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <header class="header">
+            <input type="text" placeholder="Search for anything..." />
+            <div class="user-info">
+                <span>Anima Agrawal</span>
+                <span>U.P, India</span>
+            </div>
+        </header>
+
+        <!-- Page content injected here -->
+        <section class="content" th:replace="${bodyContent}">
+            <!-- Nội dung trang sẽ được chèn ở đây -->
+        </section>
+    </main>
+
+</div>
+</body>
+</html>

@@ -25,7 +25,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Cho phép các api login register của người dùng được dùng thoải mái
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "api/bikes").hasRole("LESSOR")
+                        .requestMatchers(HttpMethod.GET, "/api/bikes").hasRole("admin")
+                        .requestMatchers("/user/**").hasAnyRole("admin", "lessor", "renter")
+                        .requestMatchers(HttpMethod.POST, "/api/bikes").hasRole("lessor")
                         // Cho phép register và login của admin
                         .requestMatchers("/register", "/login", "/css/**").permitAll()
                         // Cho phép admin cho quyền vào các đường dẫn có dạng "/**" sau khi đăng nhập

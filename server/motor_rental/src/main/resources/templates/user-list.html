@@ -1,0 +1,28 @@
+<!-- templates/user-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User List</title>
+</head>
+<body>
+
+<!-- ✅ Nội dung chính của trang, được nhúng vào layout.html -->
+<div th:fragment="content">
+    <h2 class="page-title">Users</h2>
+
+    <div class="user-grid">
+        <div class="user-card" th:each="user : ${users}">
+
+            <div class="user-body">
+                <p><strong>Tên user:</strong> <span th:text="${user.fullName}">---</span></p>
+                <p><strong>Email:</strong> <span th:text="${user.email}">---</span></p>
+                <p><strong>SĐT:</strong> <span th:text="${user.phone}">---</span></p>
+                <p><strong>Vai trò:</strong> <span th:text="${user.role}">---</span></p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

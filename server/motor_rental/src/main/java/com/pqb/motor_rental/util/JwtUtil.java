@@ -52,9 +52,12 @@ public class JwtUtil {
     }
 
     private boolean isTokenExpired(String token) {
-        Date expiration = Jwts.parserBuilder().setSigningKey(jwtSecret.getBytes())
-                .build().parseClaimsJws(token)
-                .getBody().getExpiration();
+        Date expiration = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
         return expiration.before(new Date());
     }
 }
