@@ -23,15 +23,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        // Cho phép các api login register của người dùng được dùng thoải mái
-                        .requestMatchers("/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/bikes").hasRole("admin")
-                        .requestMatchers("/user/**").hasAnyRole("admin", "lessor", "renter")
-                        .requestMatchers(HttpMethod.POST, "/api/bikes").hasRole("lessor")
-                        // Cho phép register và login của admin
-                        .requestMatchers("/register", "/login", "/css/**").permitAll()
-                        // Cho phép admin cho quyền vào các đường dẫn có dạng "/**" sau khi đăng nhập
-                        .requestMatchers("/**").hasRole("admin")
+                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/send-code").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -53,6 +45,7 @@ public class SecurityConfig {
                 );
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

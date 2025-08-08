@@ -7,4 +7,5 @@ import org.springframework.stereotype.Service;
 public interface AuthService {
     void register(User user);
     void verifyCode(String email, String code);
+    
 }

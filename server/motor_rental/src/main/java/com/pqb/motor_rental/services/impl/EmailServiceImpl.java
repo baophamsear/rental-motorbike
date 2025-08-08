@@ -1,9 +1,21 @@
 package com.pqb.motor_rental.services.impl;
 
 import com.pqb.motor_rental.services.EmailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EmailServiceImpl implements EmailService {
+
+    private final JavaMailSender mailSender;
+
+    @Autowired
+    public EmailServiceImpl(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
     @Override
     public void sendVerificationCodeEmail(String toEmail, String code) {
         String subject = "Verify your email";
@@ -13,6 +25,7 @@ public class EmailServiceImpl implements EmailService {
         email.setTo(toEmail);
         email.setSubject(subject);
         email.setText(message);
-        email.setTo(String.valueOf(email));
+
+        mailSender.send(email);
     }
 }
