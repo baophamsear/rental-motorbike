@@ -33,10 +33,15 @@ public class User {
 
     private LocalDateTime limitedUntil;
 
+    private Boolean isVerified = false;
+
+    private String verificationCode;
+
+    private LocalDateTime codeExpiry;
+
     public User() {}
 
-    public User(Integer userId, String fullName, String email, String phone, String password, Role role,
-                String avatarUrl, AccountStatus accountStatus, LocalDateTime createdAt, String violationNote, LocalDateTime limitedUntil) {
+    public User(Integer userId, String fullName, String email, String phone, String password, Role role, String avatarUrl, AccountStatus accountStatus, LocalDateTime createdAt, String violationNote, LocalDateTime limitedUntil, Boolean isVerified, String verificationCode, LocalDateTime codeExpiry) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
@@ -48,6 +53,9 @@ public class User {
         this.createdAt = createdAt;
         this.violationNote = violationNote;
         this.limitedUntil = limitedUntil;
+        this.isVerified = isVerified;
+        this.verificationCode = verificationCode;
+        this.codeExpiry = codeExpiry;
     }
 
     public Integer getUserId() {
@@ -136,5 +144,29 @@ public class User {
 
     public void setLimitedUntil(LocalDateTime limitedUntil) {
         this.limitedUntil = limitedUntil;
+    }
+
+    public Boolean getVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(Boolean verified) {
+        isVerified = verified;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public LocalDateTime getCodeExpiry() {
+        return codeExpiry;
+    }
+
+    public void setCodeExpiry(LocalDateTime codeExpiry) {
+        this.codeExpiry = codeExpiry;
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -27,11 +27,8 @@ public class UserController {
 
     @GetMapping
     public String getUsers(Model model) {
-        List<User> users = userService.getAllUsers(); // trả về danh sách bị suspended
-        model.addAttribute("users", users);
-        model.addAttribute("activePage", "users"); // sidebar active
-        model.addAttribute("bodyContent", "user-list :: content"); // fragment to inject
-        model.addAttribute("pageTitle", "User Management"); // title if needed
-        return "layout";
+        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("activePage", "users"); // để tô màu sidebar đúng
+        return "user-list";
     }
 }

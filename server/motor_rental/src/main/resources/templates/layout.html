@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${pageTitle} ?: 'MotorRenter'">MotorRenter</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
 <div class="layout">
@@ -31,12 +31,12 @@
             </div>
         </header>
 
-        <!-- Page content injected here -->
-        <section class="content" th:replace="${bodyContent}">
-            <!-- Nội dung trang sẽ được chèn ở đây -->
-        </section>
+        <section th:replace="${content}"></section>
+
+
     </main>
 
 </div>
 </body>
 </html>
+
