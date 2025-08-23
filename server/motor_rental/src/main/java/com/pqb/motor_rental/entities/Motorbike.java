@@ -4,6 +4,9 @@ import com.pqb.motor_rental.enums.BikeStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(name = "motorbike")
@@ -20,7 +23,10 @@ public class Motorbike {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
+    @Column(columnDefinition = "TEXT")
     private String licensePlate;
+
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
@@ -68,20 +74,22 @@ public class Motorbike {
         this.brand = brand;
     }
 
-    public String getLicensePlate() {
-        return licensePlate;
+    public List<String> getLicensePlate() {
+        if (licensePlate == null || licensePlate.isEmpty()) return new ArrayList<>();
+        return Arrays.asList(licensePlate.split(","));
     }
 
-    public void setLicensePlate(String licensePlate) {
-        this.licensePlate = licensePlate;
+    public void setLicensePlate(List<String> images) {
+        this.licensePlate = String.join(",", images);
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public List<String> getImageUrl() {
+        if (imageUrl == null || imageUrl.isEmpty()) return new ArrayList<>();
+        return Arrays.asList(imageUrl.split(","));
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageUrl(List<String> images) {
+        this.imageUrl = String.join(",", images);
     }
 
     public BikeStatus getStatus() {

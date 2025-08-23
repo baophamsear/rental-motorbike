@@ -8,6 +8,8 @@ public class VerificationRequest {
         this.email = email;
         this.code = code;
     }
+    
+    public VerificationRequest() {}
 
     public String getEmail() {
         return email;
