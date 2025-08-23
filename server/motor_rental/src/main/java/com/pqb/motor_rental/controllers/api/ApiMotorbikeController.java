@@ -1,5 +1,6 @@
 package com.pqb.motor_rental.controllers.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pqb.motor_rental.entities.Motorbike;
 import com.pqb.motor_rental.enums.BikeStatus;
 import com.pqb.motor_rental.services.CloudinaryService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +31,16 @@ public class ApiMotorbikeController {
 
     // Phương thức đẩy thông tin của 1 xe lên
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @PostMapping
     public ResponseEntity<String> postBike(
-            @RequestBody Motorbike motorbike,
+            @RequestPart("motorbike") String motorbikeJson,
             @RequestPart("motorImages") List<MultipartFile> motorImages,
             @RequestPart("licenseImages") List<MultipartFile> licenseImages,
             Principal principal) {
         try {
             String email = principal.getName(); // Lấy email từ token
+            ObjectMapper mapper = new ObjectMapper();
+            Motorbike motorbike = mapper.readValue(motorbikeJson, Motorbike.class);
 
             List<String> motorImageUrls = new ArrayList<>();
             for (MultipartFile file : motorImages) {
@@ -54,7 +59,10 @@ public class ApiMotorbikeController {
 
             motorbikeService.createMotorbike(motorbike, email);
             return ResponseEntity.ok("Đăng xe thành công");
-        }catch (Exception e) {
+        }catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid motorbike data: " + e.getMessage());
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Lỗi khi đăng xe: " + e.getMessage());
         }
