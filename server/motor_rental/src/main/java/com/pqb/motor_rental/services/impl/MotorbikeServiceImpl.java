@@ -73,4 +73,9 @@ public class MotorbikeServiceImpl implements MotorbikeService {
                 .orElseThrow(() -> new RuntimeException("Motorbike not found"));
     }
 
+    @Override
+    public List<Motorbike> getMotorbikesByUserId(Long userId) {
+        return motorbikeRepository.findByOwner_UserId(userId);
+    }
+
 }

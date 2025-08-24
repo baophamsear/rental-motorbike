@@ -1,5 +1,7 @@
 package com.pqb.motor_rental.util;
 
+import com.pqb.motor_rental.entities.User;
+import com.pqb.motor_rental.security.CustomUserDetails;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -21,14 +23,20 @@ public class JwtUtil {
 
     private final long jwtExpirationInMs = 86400000;
 
+
+
     @PostConstruct
     public void init(){
         this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtSecret));
     }
 
     public String generateToken(UserDetails userDetails) {
+        CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+        User user = customUserDetails.getUser();
+
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setSubject(user.getEmail())
+                .claim("userId", user.getUserId())
                 .claim("roles", userDetails.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))

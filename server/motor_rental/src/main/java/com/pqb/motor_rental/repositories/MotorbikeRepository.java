@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface MotorbikeRepository extends JpaRepository<Motorbike, Long> {
     List<Motorbike> findByStatus(BikeStatus status);
-
+    List<Motorbike> findByOwner_UserId(Long userId);
 }

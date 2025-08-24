@@ -26,8 +26,11 @@ public class SecurityConfig {
                 .cors(cors -> {}) // dùng bean CorsConfigurationSource ở trên
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/**").permitAll()
-                        .requestMatchers("/api/bikes/**").permitAll()
+//                        .requestMatchers("/api/users/**").permitAll()
+//                        .requestMatchers("/api/bikes/**").permitAll()
+                        .requestMatchers("/api/brands/**").permitAll()
+                        .requestMatchers("/api/locations/**").permitAll()
+//                                .anyRequest().authenticated()
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )

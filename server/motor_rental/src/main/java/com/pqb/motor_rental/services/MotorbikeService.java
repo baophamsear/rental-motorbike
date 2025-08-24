@@ -11,4 +11,5 @@ public interface MotorbikeService {
     List<Motorbike> findByStatus(BikeStatus status);
     Motorbike approveMotorbike(Long motorbikeId);
     Motorbike findById(Long motorbikeId);
+    List<Motorbike> getMotorbikesByUserId(Long userId);
 }
