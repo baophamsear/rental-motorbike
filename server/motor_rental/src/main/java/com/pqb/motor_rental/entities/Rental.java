@@ -19,13 +19,20 @@ public class Rental {
     @JoinColumn(name = "renter_id")
     private User renter;
 
-    @ManyToOne
-    @JoinColumn(name = "lessor_id")
-    private User lessor;
+//    @ManyToOne
+//    @JoinColumn(name = "lessor_id")
+//    private User lessor;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "bike_id")
+//    private Motorbike bike;
 
     @ManyToOne
-    @JoinColumn(name = "bike_id")
-    private Motorbike bike;
+    @JoinColumn(name = "rental_contract_id")
+    private RentalContract rentalContract;
+
+
+
 
     private LocalDate startDate;
     private LocalDate endDate;

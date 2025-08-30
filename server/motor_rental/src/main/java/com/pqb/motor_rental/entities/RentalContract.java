@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class RentalContract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "contract_id")
     private Integer contractId;
 
     @ManyToOne
@@ -23,12 +24,16 @@ public class RentalContract {
     @JoinColumn(name = "bike_id")
     private Motorbike bike;
 
-    private BigDecimal serviceFee;
+    private Double serviceFee;
 
     @Enumerated(EnumType.STRING)
     private PaymentCycle paymentCycle;
 
+
+    @Column(name = "start_date", nullable = true)
     private LocalDate startDate;
+
+    @Column(name = "end_date", nullable = true)
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
@@ -42,7 +47,20 @@ public class RentalContract {
 
     private LocalDateTime approvedAt;
 
+    private LocalDateTime updatedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private LocationPoint location;
+
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     public Integer getContractId() {
         return contractId;
@@ -68,11 +86,11 @@ public class RentalContract {
         this.bike = bike;
     }
 
-    public BigDecimal getServiceFee() {
+    public Double getServiceFee() {
         return serviceFee;
     }
 
-    public void setServiceFee(BigDecimal serviceFee) {
+    public void setServiceFee(Double serviceFee) {
         this.serviceFee = serviceFee;
     }
 
@@ -130,6 +148,14 @@ public class RentalContract {
 
     public void setApprovedAt(LocalDateTime approvedAt) {
         this.approvedAt = approvedAt;
+    }
+
+    public LocationPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(LocationPoint location) {
+        this.location = location;
     }
 }
 

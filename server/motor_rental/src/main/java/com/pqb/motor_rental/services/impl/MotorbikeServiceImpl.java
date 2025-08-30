@@ -1,8 +1,10 @@
 package com.pqb.motor_rental.services.impl;
 
+import com.pqb.motor_rental.dto.BikeStatusUpdateRequest;
 import com.pqb.motor_rental.entities.Motorbike;
 import com.pqb.motor_rental.entities.User;
 import com.pqb.motor_rental.enums.BikeStatus;
+import com.pqb.motor_rental.enums.ContractStatus;
 import com.pqb.motor_rental.repositories.MotorbikeRepository;
 import com.pqb.motor_rental.repositories.UserRepository;
 import com.pqb.motor_rental.services.MotorbikeService;
@@ -37,7 +39,6 @@ public class MotorbikeServiceImpl implements MotorbikeService {
         mtbk.setOwner(lessor);
         mtbk.setLicensePlate(motorbike.getLicensePlate());
         mtbk.setImageUrl(motorbike.getImageUrl());
-        mtbk.setPricePerDay(motorbike.getPricePerDay());
         mtbk.setLocation(motorbike.getLocation());
         mtbk.setStatus(BikeStatus.pending);
         motorbikeRepository.save(mtbk);
@@ -76,6 +77,36 @@ public class MotorbikeServiceImpl implements MotorbikeService {
     @Override
     public List<Motorbike> getMotorbikesByUserId(Long userId) {
         return motorbikeRepository.findByOwner_UserId(userId);
+    }
+
+    @Override
+    public void updateStatuses(BikeStatusUpdateRequest request) {
+        List<Motorbike> bikes = motorbikeRepository.findAllById(request.getBikeIds());
+        for (Motorbike motorbike: bikes) {
+            motorbike.setStatus(BikeStatus.valueOf(request.getStatus()));
+            if ("rejected".equals(request.getStatus()) && request.getRejectionReason() != null) {
+                motorbike.setNote(request.getRejectionReason());
+            }
+        }
+        motorbikeRepository.saveAll(bikes);
+    }
+
+    @Override
+    public void updateMotorAvailable(Long motorbikeId) {
+        Motorbike bike = motorbikeRepository.findById(motorbikeId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy xe tương ứng!"));
+
+        if (bike.getStatus() == BikeStatus.available) {
+            throw new IllegalStateException("Xe đang hoạt động!");
+        }
+
+        bike.setStatus(BikeStatus.available);
+        motorbikeRepository.save(bike);
+    }
+
+    @Override
+    public List<Motorbike> getAvailableMotorbikes() {
+        return motorbikeRepository.findByStatus(BikeStatus.available);
     }
 
 }

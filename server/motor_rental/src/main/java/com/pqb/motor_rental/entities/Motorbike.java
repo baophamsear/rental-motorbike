@@ -32,7 +32,7 @@ public class Motorbike {
     @Enumerated(EnumType.STRING)
     private BikeStatus status;
 
-    private BigDecimal pricePerDay;
+    private Double pricePerDay = 100000.0;
 
     @ManyToOne
     @JoinColumn(name = "location_id")
@@ -41,6 +41,10 @@ public class Motorbike {
     private Boolean isHomeDelivery;
 
     private String name;
+
+    private String note;
+
+
 
     public String getName() {
         return name;
@@ -100,13 +104,13 @@ public class Motorbike {
         this.status = status;
     }
 
-    public BigDecimal getPricePerDay() {
+    public Double getPricePerDay() {
         return pricePerDay;
     }
 
-    public void setPricePerDay(BigDecimal pricePerDay) {
-        this.pricePerDay = pricePerDay;
-    }
+//    public void setPricePerDay() {
+//        this.pricePerDay = 100000.0;
+//    }
 
     public Location getLocation() {
         return location;
@@ -123,4 +127,14 @@ public class Motorbike {
     public void setHomeDelivery(Boolean homeDelivery) {
         isHomeDelivery = homeDelivery;
     }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.pqb.motor_rental.services;
 
+import com.pqb.motor_rental.dto.BikeStatusUpdateRequest;
 import com.pqb.motor_rental.entities.Motorbike;
 import com.pqb.motor_rental.enums.BikeStatus;
 
@@ -12,4 +13,7 @@ public interface MotorbikeService {
     Motorbike approveMotorbike(Long motorbikeId);
     Motorbike findById(Long motorbikeId);
     List<Motorbike> getMotorbikesByUserId(Long userId);
+    void updateStatuses(BikeStatusUpdateRequest request);
+    void updateMotorAvailable(Long motorbikeId);
+    List<Motorbike> getAvailableMotorbikes();
 }
