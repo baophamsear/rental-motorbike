@@ -1,10 +1,10 @@
-# Stage 1: Build JAR
+# Stage 1: Build
 FROM maven:3.9.4-eclipse-temurin-17 AS builder
 WORKDIR /app
-COPY . .
+COPY motor_rental/ .
 RUN mvn clean install -DskipTests
 
-# Stage 2: Run app
+# Stage 2: Run
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
