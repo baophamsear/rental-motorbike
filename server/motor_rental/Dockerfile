@@ -1,7 +1,7 @@
 # Stage 1: Build
 FROM maven:3.9.4-eclipse-temurin-17 AS builder
 WORKDIR /app
-COPY motor_rental/ .
+COPY . .
 RUN mvn clean install -DskipTests
 
 # Stage 2: Run
