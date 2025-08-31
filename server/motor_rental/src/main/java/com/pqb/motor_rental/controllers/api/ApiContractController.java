@@ -3,6 +3,7 @@ package com.pqb.motor_rental.controllers.api;
 
 import com.pqb.motor_rental.dto.ContractBatchInitRequest;
 import com.pqb.motor_rental.dto.ContractUpdateRequest;
+import com.pqb.motor_rental.entities.Motorbike;
 import com.pqb.motor_rental.entities.RentalContract;
 import com.pqb.motor_rental.entities.User;
 import com.pqb.motor_rental.security.CustomUserDetails;
@@ -14,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +72,12 @@ public class ApiContractController {
     public ResponseEntity<?> updateContractActived(@PathVariable Long id) {
         contractService.updateActiveContractStatus(id);
         return ResponseEntity.ok("Cập nhật hợp đồng thành công!");
+    }
+
+    @GetMapping("/active")
+    @PreAuthorize("hasRole('renter')")
+    public ResponseEntity<List<RentalContract>> getActiveContracts(Principal principal) {
+        return ResponseEntity.ok(contractService.getActiveContracts());
     }
 
 }

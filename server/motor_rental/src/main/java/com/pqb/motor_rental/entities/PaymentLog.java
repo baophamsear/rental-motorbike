@@ -22,7 +22,7 @@ public class PaymentLog {
     private Rental rental;
 
     @ManyToOne
-    @JoinColumn(name = "contract_id", referencedColumnName = "contractId")
+    @JoinColumn(name = "contract_id")
     private RentalContract contract;
 
     private BigDecimal grossAmount;

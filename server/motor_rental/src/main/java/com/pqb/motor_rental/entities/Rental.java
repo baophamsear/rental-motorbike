@@ -45,7 +45,7 @@ public class Rental {
     @JoinColumn(name = "return_location_id")
     private Location returnLocation;
 
-    private BigDecimal totalPrice;
+    private Double totalPrice;
 
     @Enumerated(EnumType.STRING)
     private RentalStatus status;
@@ -54,4 +54,111 @@ public class Rental {
 
     @Enumerated(EnumType.STRING)
     private PickupType pickupType;
+
+    @OneToOne(mappedBy = "rental", cascade = CascadeType.ALL)
+    private Payment payment;
+
+    public Rental(Integer rentalId, User renter, RentalContract rentalContract, LocalDate startDate, LocalDate endDate, Location pickupLocation, Location returnLocation, Double totalPrice, RentalStatus status, LocalDateTime createdAt, PickupType pickupType) {
+        this.rentalId = rentalId;
+        this.renter = renter;
+        this.rentalContract = rentalContract;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.pickupLocation = pickupLocation;
+        this.returnLocation = returnLocation;
+        this.totalPrice = totalPrice;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.pickupType = pickupType;
+    }
+
+    public Rental() {}
+
+    public Integer getRentalId() {
+        return rentalId;
+    }
+
+    public void setRentalId(Integer rentalId) {
+        this.rentalId = rentalId;
+    }
+
+    public User getRenter() {
+        return renter;
+    }
+
+    public void setRenter(User renter) {
+        this.renter = renter;
+    }
+
+    public RentalContract getRentalContract() {
+        return rentalContract;
+    }
+
+    public void setRentalContract(RentalContract rentalContract) {
+        this.rentalContract = rentalContract;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public Location getPickupLocation() {
+        return pickupLocation;
+    }
+
+    public void setPickupLocation(Location pickupLocation) {
+        this.pickupLocation = pickupLocation;
+    }
+
+    public Location getReturnLocation() {
+        return returnLocation;
+    }
+
+    public void setReturnLocation(Location returnLocation) {
+        this.returnLocation = returnLocation;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public RentalStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(RentalStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public PickupType getPickupType() {
+        return pickupType;
+    }
+
+    public void setPickupType(PickupType pickupType) {
+        this.pickupType = pickupType;
+    }
 }

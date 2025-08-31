@@ -14,9 +14,9 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer paymentId;
 
-    @ManyToOne
-    @JoinColumn(name = "rental_id")
-    private Rental rental;
+//    @ManyToOne
+//    @JoinColumn(name = "rental_id")
+//    private Rental rental;
 
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
@@ -26,4 +26,8 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
+
+    @OneToOne
+    @JoinColumn(name = "rental_id", unique = true)
+    private Rental rental;
 }

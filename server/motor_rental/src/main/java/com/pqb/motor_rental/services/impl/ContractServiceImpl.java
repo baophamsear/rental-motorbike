@@ -173,4 +173,9 @@ public class ContractServiceImpl implements ContractService {
         contractRepository.save(contract);
     }
 
+    @Override
+    public List<RentalContract> getActiveContracts() {
+        return contractRepository.findByStatus(ContractStatus.active);
+    }
+
 }

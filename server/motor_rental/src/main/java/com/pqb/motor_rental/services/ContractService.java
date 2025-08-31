@@ -16,4 +16,5 @@ public interface ContractService {
     void updateContractFromLessor(Long contractId, ContractUpdateRequest dto, Integer userId);
     List<RentalContract> getAllContracts();
     void updateActiveContractStatus(Long contractId);
+    List<RentalContract> getActiveContracts();
 }
