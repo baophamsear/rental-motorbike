@@ -31,6 +31,7 @@ public class VNPayServiceImpl implements VNPayService {
         Map<String, String> params = vnPayConfig.getVNPayConfig(orderInfo, txnRef);
         params.put("vnp_Amount", String.valueOf(amount * 100));
         params.put("vnp_IpAddr", getClientIp(request));
+        params.put("vnp_BankCode", "NCB");
 
         // 3. Sắp xếp và ký hash
         List<String> sortedKeys = new ArrayList<>(params.keySet());

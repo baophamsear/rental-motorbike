@@ -7,7 +7,9 @@ import com.pqb.motor_rental.enums.PaymentStatus;
 import com.pqb.motor_rental.repositories.PaymentRepository;
 import com.pqb.motor_rental.services.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -93,7 +95,7 @@ public class ApiVNPayController {
         return ResponseEntity.ok("Xử lý callback VNPay thành công.");
     }
 
-    @GetMapping("/create-payment")
+    @GetMapping(value = "/create-payment", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaymentDTO.VNPayResponse> createPayment(
             @RequestParam long amount,
             @RequestParam String orderInfo,
