@@ -30,4 +30,86 @@ public class Payment {
     @OneToOne
     @JoinColumn(name = "rental_id", unique = true)
     private Rental rental;
+
+    @Column(unique = true)
+    private String txnRef;
+
+    private String transactionNo;
+
+    public Payment() {}
+
+    public Payment(Integer paymentId, PaymentMethod paymentMethod, BigDecimal amount, LocalDateTime paymentTime, PaymentStatus status, Rental rental, String txnRef, String transactionNo) {
+        this.paymentId = paymentId;
+        this.paymentMethod = paymentMethod;
+        this.amount = amount;
+        this.paymentTime = paymentTime;
+        this.status = status;
+        this.rental = rental;
+        this.txnRef = txnRef;
+        this.transactionNo = transactionNo;
+    }
+
+    public Integer getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(Integer paymentId) {
+        this.paymentId = paymentId;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public LocalDateTime getPaymentTime() {
+        return paymentTime;
+    }
+
+    public void setPaymentTime(LocalDateTime paymentTime) {
+        this.paymentTime = paymentTime;
+    }
+
+    public PaymentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
+    }
+
+    public Rental getRental() {
+        return rental;
+    }
+
+    public void setRental(Rental rental) {
+        this.rental = rental;
+    }
+
+    public String getTxnRef() {
+        return txnRef;
+    }
+
+    public void setTxnRef(String txnRef) {
+        this.txnRef = txnRef;
+    }
+
+    public String getTransactionNo() {
+        return transactionNo;
+    }
+
+    public void setTransactionNo(String transactionNo) {
+        this.transactionNo = transactionNo;
+    }
 }
