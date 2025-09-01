@@ -21,7 +21,10 @@ import java.util.UUID;
 public class ApiMomoController {
 
     @PostMapping("/create-payment")
-    public ResponseEntity<?> createMomoPayment(@RequestParam long amount) throws Exception {
+    public ResponseEntity<?> createMomoPayment(@RequestBody Map<String, Object> payload) throws Exception {
+
+        long amount = Long.parseLong(payload.get("amount").toString());
+
         String orderId = UUID.randomUUID().toString();
         String requestId = UUID.randomUUID().toString();
         String orderInfo = "Thanh toán dịch vụ thuê xe";
@@ -70,7 +73,11 @@ public class ApiMomoController {
         SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         sha256_HMAC.init(secretKeySpec);
         byte[] result = sha256_HMAC.doFinal(data.getBytes(StandardCharsets.UTF_8));
-        return Base64.getEncoder().encodeToString(result);
+        StringBuilder sb = new StringBuilder();
+        for (byte b : result) {
+            sb.append(String.format("%02x", b & 0xff));
+        }
+        return sb.toString();
     }
 
     @PostMapping("/callback")
