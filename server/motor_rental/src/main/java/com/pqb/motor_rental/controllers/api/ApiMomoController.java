@@ -90,38 +90,44 @@ public class ApiMomoController {
     }
 
     @PostMapping("/callback")
-    public ResponseEntity<?> handleCallback(
-            @RequestParam String orderId,
-            @RequestParam String transId,
-            @RequestParam String amount,
-            @RequestParam String message,
-            @RequestParam String resultCode,
-            @RequestParam(required = false) String orderInfo
-    ) {
-        System.out.println("✅ Callback với query params: " + orderId + " - " + resultCode);
+    public ResponseEntity<?> handleCallback(@RequestBody Map<String, Object> payload) {
+        System.out.println("✅ Momo callback received: " + payload);
 
-        Long rentalIdLong = Long.parseLong(orderId);
-        Optional<Rental> rentalOptional = rentalRepository.findById(rentalIdLong);
+        // ✅ Lấy giá trị đúng kiểu an toàn
+        String orderIdStr = String.valueOf(payload.get("orderId"));
+        String transId = String.valueOf(payload.get("transId"));
+        String amountStr = String.valueOf(payload.get("amount"));
+        String message = String.valueOf(payload.get("message"));
+        String resultCodeStr = String.valueOf(payload.get("resultCode"));
+        String orderInfo = String.valueOf(payload.get("orderInfo"));
+
+        // ✅ Convert orderId và amount về kiểu Long
+        Long rentalId = Long.parseLong(orderIdStr);
+        Double amount = Double.parseDouble(amountStr);
+
+        // ✅ Tìm rental tương ứng
+        Optional<Rental> rentalOptional = rentalRepository.findById(rentalId);
         if (rentalOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy rental với ID = " + rentalIdLong);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Không tìm thấy rental với ID = " + rentalId);
         }
 
         Rental rental = rentalOptional.get();
 
+        // ✅ Tạo và lưu đối tượng Payment
         Payment payment = new Payment();
         payment.setRental(rental);
         payment.setPaymentMethod(PaymentMethod.momo);
-        payment.setAmount(Double.parseDouble(amount));
+        payment.setAmount(amount);
         payment.setPaymentTime(LocalDateTime.now());
-        payment.setStatus(resultCode.equals("0") ? PaymentStatus.success : PaymentStatus.failed);
+        payment.setStatus(resultCodeStr.equals("0") ? PaymentStatus.success : PaymentStatus.failed);
         payment.setTransactionNo(transId);
-        payment.setTxnRef(orderId);
+        payment.setTxnRef(orderIdStr);
 
         paymentRepository.save(payment);
 
-        return ResponseEntity.ok("✅ Thanh toán đã được xử lý (dạng query).");
+        return ResponseEntity.ok("✅ Callback received and payment saved.");
     }
-
 
 
 
