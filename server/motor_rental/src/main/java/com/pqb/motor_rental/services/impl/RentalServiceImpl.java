@@ -28,7 +28,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public void createRental(RentalRequest request, CustomUserDetails userDetails) {
+    public Rental createRental(RentalRequest request, CustomUserDetails userDetails) {
         User renter = userRepository.findByEmail(userDetails.getUser().getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -46,6 +46,7 @@ public class RentalServiceImpl implements RentalService {
         rental.setCreatedAt(LocalDateTime.now());
 
         rentalRepository.save(rental);
+        return rental;
     }
 
 

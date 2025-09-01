@@ -1,6 +1,7 @@
 package com.pqb.motor_rental.controllers.api;
 
 import com.pqb.motor_rental.dto.RentalRequest;
+import com.pqb.motor_rental.entities.Rental;
 import com.pqb.motor_rental.entities.RentalContract;
 import com.pqb.motor_rental.security.CustomUserDetails;
 import com.pqb.motor_rental.services.RentalService;
@@ -10,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rentals")
@@ -24,7 +26,7 @@ public class ApiRentalController {
     @PreAuthorize("hasRole('renter')")
     public ResponseEntity<?> createRental(@RequestBody RentalRequest request,
                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
-        rentalService.createRental(request, userDetails);
-        return ResponseEntity.ok("Rental created successfully");
+        Rental rental = rentalService.createRental(request, userDetails);
+        return ResponseEntity.ok(Map.of("rentalId", rental.getRentalId()));
     }
 }
