@@ -93,41 +93,42 @@ public class ApiMomoController {
     public ResponseEntity<?> handleCallback(@RequestBody Map<String, Object> payload) {
         System.out.println("✅ Momo callback received: " + payload);
 
-        // Kiểm tra chữ ký (signature) nếu muốn
-
-        String orderId = (String) payload.get("orderId");
+        // ✅ Lấy giá trị đúng kiểu an toàn
+        String orderIdStr = String.valueOf(payload.get("orderId"));
         String transId = String.valueOf(payload.get("transId"));
-        String amount = String.valueOf(payload.get("amount"));
-        String message = (String) payload.get("message");
-        String resultCode = String.valueOf(payload.get("resultCode")); // 0 = Thành công
-        String orderInfo = (String) payload.get("orderInfo");
+        String amountStr = String.valueOf(payload.get("amount"));
+        String message = String.valueOf(payload.get("message"));
+        String resultCodeStr = String.valueOf(payload.get("resultCode"));
+        String orderInfo = String.valueOf(payload.get("orderInfo"));
 
-        String rentalId = orderId; // giả sử orderId = rentalId (nếu bạn gán theo lúc tạo payment)
+        // ✅ Convert orderId và amount về kiểu Long
+        Long rentalId = Long.parseLong(orderIdStr);
+        Double amount = Double.parseDouble(amountStr);
 
-        Long rentalIdLong = Long.parseLong(orderId); // giả sử orderId chính là rentalId
-
-
-        Optional<Rental> rentalOptional = rentalRepository.findById(rentalIdLong);
+        // ✅ Tìm rental tương ứng
+        Optional<Rental> rentalOptional = rentalRepository.findById(rentalId);
         if (rentalOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy rental với ID = " + rentalIdLong);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Không tìm thấy rental với ID = " + rentalId);
         }
 
         Rental rental = rentalOptional.get();
 
-        // Lưu vào DB
+        // ✅ Tạo và lưu đối tượng Payment
         Payment payment = new Payment();
         payment.setRental(rental);
         payment.setPaymentMethod(PaymentMethod.momo);
-        payment.setAmount(Double.parseDouble(amount));
+        payment.setAmount(amount);
         payment.setPaymentTime(LocalDateTime.now());
-        payment.setStatus(resultCode.equals("0") ? PaymentStatus.success : PaymentStatus.failed);
+        payment.setStatus(resultCodeStr.equals("0") ? PaymentStatus.success : PaymentStatus.failed);
         payment.setTransactionNo(transId);
-        payment.setTxnRef(orderId);
+        payment.setTxnRef(orderIdStr);
 
         paymentRepository.save(payment);
 
-        return ResponseEntity.ok("Callback received and saved.");
+        return ResponseEntity.ok("✅ Callback received and payment saved.");
     }
+
 
 
 }
