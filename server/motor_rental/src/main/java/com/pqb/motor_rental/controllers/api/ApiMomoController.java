@@ -1,24 +1,33 @@
 package com.pqb.motor_rental.controllers.api;
 
 import com.pqb.motor_rental.config.MoMoConfig;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import com.pqb.motor_rental.entities.Payment;
+import com.pqb.motor_rental.entities.Rental;
+import com.pqb.motor_rental.enums.PaymentMethod;
+import com.pqb.motor_rental.enums.PaymentStatus;
+import com.pqb.motor_rental.repositories.PaymentRepository;
+import com.pqb.motor_rental.repositories.RentalRepository;
+import com.pqb.motor_rental.services.impl.MotorbikeServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/momo")
 public class ApiMomoController {
+
+    @Autowired
+    RentalRepository rentalRepository;
+
+    @Autowired
+    PaymentRepository paymentRepository;
 
     @PostMapping("/create-payment")
     public ResponseEntity<?> createMomoPayment(@RequestBody Map<String, Object> payload) throws Exception {
@@ -84,9 +93,40 @@ public class ApiMomoController {
     public ResponseEntity<?> handleCallback(@RequestBody Map<String, Object> payload) {
         System.out.println("✅ Momo callback received: " + payload);
 
-        // TODO: kiểm tra "signature" và cập nhật trạng thái hợp đồng theo `orderId`
+        // Kiểm tra chữ ký (signature) nếu muốn
 
-        return ResponseEntity.ok("OK");
+        String orderId = (String) payload.get("orderId");
+        String transId = String.valueOf(payload.get("transId"));
+        String amount = String.valueOf(payload.get("amount"));
+        String message = (String) payload.get("message");
+        String resultCode = String.valueOf(payload.get("resultCode")); // 0 = Thành công
+        String orderInfo = (String) payload.get("orderInfo");
+
+        String rentalId = orderId; // giả sử orderId = rentalId (nếu bạn gán theo lúc tạo payment)
+
+        Long rentalIdLong = Long.parseLong(orderId); // giả sử orderId chính là rentalId
+
+
+        Optional<Rental> rentalOptional = rentalRepository.findById(rentalIdLong);
+        if (rentalOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy rental với ID = " + rentalIdLong);
+        }
+
+        Rental rental = rentalOptional.get();
+
+        // Lưu vào DB
+        Payment payment = new Payment();
+        payment.setRental(rental);
+        payment.setPaymentMethod(PaymentMethod.momo);
+        payment.setAmount(Double.parseDouble(amount));
+        payment.setPaymentTime(LocalDateTime.now());
+        payment.setStatus(resultCode.equals("0") ? PaymentStatus.success : PaymentStatus.failed);
+        payment.setTransactionNo(transId);
+        payment.setTxnRef(orderId);
+
+        paymentRepository.save(payment);
+
+        return ResponseEntity.ok("Callback received and saved.");
     }
 
 

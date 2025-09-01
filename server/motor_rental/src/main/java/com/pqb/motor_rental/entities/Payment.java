@@ -21,7 +21,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    private BigDecimal amount;
+    private Double amount;
     private LocalDateTime paymentTime;
 
     @Enumerated(EnumType.STRING)
@@ -38,7 +38,7 @@ public class Payment {
 
     public Payment() {}
 
-    public Payment(Integer paymentId, PaymentMethod paymentMethod, BigDecimal amount, LocalDateTime paymentTime, PaymentStatus status, Rental rental, String txnRef, String transactionNo) {
+    public Payment(Integer paymentId, PaymentMethod paymentMethod, Double amount, LocalDateTime paymentTime, PaymentStatus status, Rental rental, String txnRef, String transactionNo) {
         this.paymentId = paymentId;
         this.paymentMethod = paymentMethod;
         this.amount = amount;
@@ -65,11 +65,11 @@ public class Payment {
         this.paymentMethod = paymentMethod;
     }
 
-    public BigDecimal getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
