@@ -39,6 +39,7 @@ public class VNPayConfig {
         vnpParamsMap.put("vnp_Locale", "vn");
         vnpParamsMap.put("vnp_OrderType", orderType);
         vnpParamsMap.put("vnp_ReturnUrl", vnp_ReturnUrl);
+//        vnpParamsMap.put("vnp_BankCode", "NCB");
 
         vnpParamsMap.put("vnp_TxnRef", txnRef);
         vnpParamsMap.put("vnp_OrderInfo", orderInfo);

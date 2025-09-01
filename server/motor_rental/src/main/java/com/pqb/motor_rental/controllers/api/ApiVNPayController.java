@@ -97,10 +97,11 @@ public class ApiVNPayController {
             @RequestParam long amount,
             @RequestParam String orderInfo,
             HttpServletRequest request,
-            @RequestParam(defaultValue = "NCB") String bankCode
+            @RequestParam(required = false) String bankCode
     ) {
         // gọi service để tạo URL thanh toán
         PaymentDTO.VNPayResponse response = vnPayService.createVnPayPayment(request, amount, orderInfo, bankCode);
+
         return ResponseEntity.ok(response);
     }
 }

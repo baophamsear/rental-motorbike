@@ -34,18 +34,38 @@ public class VNPayUtil {
     }
 
     //Lâys đọa chỉ ip thật của người dùng để gửi request
+//    public static String getIpAddress(HttpServletRequest request) {
+//        String ipAdress;
+//        try {
+//            ipAdress = request.getHeader("X-FORWARDED-FOR");
+//            if (ipAdress == null) {
+//                ipAdress = request.getRemoteAddr();
+//            }
+//        } catch (Exception e) {
+//            ipAdress = "Invalid IP:" + e.getMessage();
+//        }
+//        return ipAdress;
+//    }
+
     public static String getIpAddress(HttpServletRequest request) {
         String ipAdress;
         try {
             ipAdress = request.getHeader("X-FORWARDED-FOR");
-            if (ipAdress == null) {
+            if (ipAdress == null || ipAdress.isEmpty()) {
                 ipAdress = request.getRemoteAddr();
             }
+
+            // ✅ Nếu là localhost IPv6, chuyển sang IPv4
+            if ("0:0:0:0:0:0:0:1".equals(ipAdress)) {
+                ipAdress = "127.0.0.1";
+            }
+
         } catch (Exception e) {
             ipAdress = "Invalid IP:" + e.getMessage();
         }
         return ipAdress;
     }
+
 
 //    public static String getRandomNumber(int len) {
 //        Random rnd = new Random();

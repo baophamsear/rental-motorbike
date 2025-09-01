@@ -3,15 +3,11 @@ package com.pqb.motor_rental.services.impl;
 import com.pqb.motor_rental.config.VNPayConfig;
 import com.pqb.motor_rental.dto.PaymentDTO;
 import com.pqb.motor_rental.services.VNPayService;
+import com.pqb.motor_rental.util.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Map;
 
 @Service
 public class VNPayServiceImpl implements VNPayService {
@@ -30,33 +26,34 @@ public class VNPayServiceImpl implements VNPayService {
         // 2. Tạo params từ config
         Map<String, String> params = vnPayConfig.getVNPayConfig(orderInfo, txnRef);
         params.put("vnp_Amount", String.valueOf(amount * 100));
-        params.put("vnp_IpAddr", getClientIp(request));
-//        String bankCode = request.getParameter("bankCode");
+        params.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
+
+        // ✅ Optional: Chỉ thêm nếu được phép hoặc cần test
         if (bankCode != null && !bankCode.isBlank()) {
             params.put("vnp_BankCode", bankCode);
         }
 
-        // 3. Sắp xếp và ký hash
-        List<String> sortedKeys = new ArrayList<>(params.keySet());
-        Collections.sort(sortedKeys);
+        // 3. Sinh chữ ký và tạo query URL
+        String dataToSign = VNPayUtil.getPaymentURL(params, false); // Không encode key
+        String secureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), dataToSign);
 
-        StringBuilder hashData = new StringBuilder();
-        StringBuilder query = new StringBuilder();
-        for (String key : sortedKeys) {
-            String value = params.get(key);
-            if (value != null && !value.isEmpty()) {
-                hashData.append(key).append('=').append(URLEncoder.encode(value, StandardCharsets.US_ASCII)).append('&');
-                query.append(key).append('=').append(URLEncoder.encode(value, StandardCharsets.US_ASCII)).append('&');
-            }
-        }
+        String queryUrl = VNPayUtil.getPaymentURL(params, true); // Có encode key
+        queryUrl += "&vnp_SecureHash=" + secureHash;
 
-        hashData.setLength(hashData.length() - 1);
-        query.setLength(query.length() - 1);
+        System.out.println("🧾 [VNPay] Dữ liệu ký (dataToSign):");
+        System.out.println(dataToSign);
 
-        String secureHash = hmacSHA512(vnPayConfig.getSecretKey(), hashData.toString());
-        query.append("&vnp_SecureHash=").append(secureHash);
+        System.out.println("🔑 SecretKey: " + vnPayConfig.getSecretKey());
+        System.out.println("🔐 SecureHash (vnp_SecureHash):");
+        System.out.println(secureHash);
 
-        String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + query;
+
+
+
+        String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
+
+        System.out.println("🌐 Final paymentUrl:");
+        System.out.println(paymentUrl);
 
         // 4. Trả về DTO
         return new PaymentDTO.VNPayResponse(
@@ -64,37 +61,5 @@ public class VNPayServiceImpl implements VNPayService {
                 txnRef,
                 params.get("vnp_ExpireDate")
         );
-    }
-
-
-    // IP Helper
-    private String getClientIp(HttpServletRequest request) {
-        String ip = request.getHeader("X-FORWARDED-FOR");
-        if (ip == null || ip.isEmpty()) {
-            ip = request.getRemoteAddr();
-        }
-
-        // Convert IPv6 localhost to IPv4
-        if ("0:0:0:0:0:0:0:1".equals(ip)) {
-            ip = "127.0.0.1";
-        }
-
-        return ip;
-    }
-    // Ký HMAC SHA512
-    private String hmacSHA512(String key, String data) {
-        try {
-            Mac hmac = Mac.getInstance("HmacSHA512");
-            SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
-            hmac.init(secretKey);
-            byte[] bytes = hmac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : bytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi ký HMAC", e);
-        }
     }
 }
