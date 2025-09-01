@@ -6,6 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface VNPayService {
-    PaymentDTO.VNPayResponse createVnPayPayment(HttpServletRequest request, long amount, String orderInfo);
+    PaymentDTO.VNPayResponse createVnPayPayment(HttpServletRequest request, long amount, String orderInfo, String bankCode);
 }
 

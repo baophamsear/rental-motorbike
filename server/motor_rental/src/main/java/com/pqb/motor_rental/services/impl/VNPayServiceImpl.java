@@ -23,7 +23,7 @@ public class VNPayServiceImpl implements VNPayService {
     }
 
     @Override
-    public PaymentDTO.VNPayResponse createVnPayPayment(HttpServletRequest request, long amount, String orderInfo) {
+    public PaymentDTO.VNPayResponse createVnPayPayment(HttpServletRequest request, long amount, String orderInfo, String bankCode) {
         // 1. Sinh txnRef
         String txnRef = "INV" + System.currentTimeMillis();
 
@@ -31,7 +31,10 @@ public class VNPayServiceImpl implements VNPayService {
         Map<String, String> params = vnPayConfig.getVNPayConfig(orderInfo, txnRef);
         params.put("vnp_Amount", String.valueOf(amount * 100));
         params.put("vnp_IpAddr", getClientIp(request));
-        params.put("vnp_BankCode", "NCB");
+//        String bankCode = request.getParameter("bankCode");
+        if (bankCode != null && !bankCode.isBlank()) {
+            params.put("vnp_BankCode", bankCode);
+        }
 
         // 3. Sắp xếp và ký hash
         List<String> sortedKeys = new ArrayList<>(params.keySet());
@@ -70,9 +73,14 @@ public class VNPayServiceImpl implements VNPayService {
         if (ip == null || ip.isEmpty()) {
             ip = request.getRemoteAddr();
         }
+
+        // Convert IPv6 localhost to IPv4
+        if ("0:0:0:0:0:0:0:1".equals(ip)) {
+            ip = "127.0.0.1";
+        }
+
         return ip;
     }
-
     // Ký HMAC SHA512
     private String hmacSHA512(String key, String data) {
         try {

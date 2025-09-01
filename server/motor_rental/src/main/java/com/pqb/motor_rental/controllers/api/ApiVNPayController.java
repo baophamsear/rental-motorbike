@@ -10,10 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -95,14 +92,15 @@ public class ApiVNPayController {
         return ResponseEntity.ok("Xử lý callback VNPay thành công.");
     }
 
-    @GetMapping(value = "/create-payment", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/create-payment")
     public ResponseEntity<PaymentDTO.VNPayResponse> createPayment(
             @RequestParam long amount,
             @RequestParam String orderInfo,
-            HttpServletRequest request
+            HttpServletRequest request,
+            @RequestParam(defaultValue = "NCB") String bankCode
     ) {
         // gọi service để tạo URL thanh toán
-        PaymentDTO.VNPayResponse response = vnPayService.createVnPayPayment(request, amount, orderInfo);
+        PaymentDTO.VNPayResponse response = vnPayService.createVnPayPayment(request, amount, orderInfo, bankCode);
         return ResponseEntity.ok(response);
     }
 }
