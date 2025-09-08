@@ -7,5 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface RentalRepository extends JpaRepository<Rental, Long> {
-    List<Rental> findByRenter(Long userId);
+    List<Rental> findByRenter_UserId(Long userId);
 }

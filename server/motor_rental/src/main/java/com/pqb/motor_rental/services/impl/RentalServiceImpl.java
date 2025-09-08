@@ -1,14 +1,17 @@
 package com.pqb.motor_rental.services.impl;
 
 import com.pqb.motor_rental.dto.RentalRequest;
+import com.pqb.motor_rental.dto.RentalUpdateRequest;
 import com.pqb.motor_rental.entities.Rental;
 import com.pqb.motor_rental.entities.RentalContract;
 import com.pqb.motor_rental.entities.User;
+import com.pqb.motor_rental.enums.RentalStatus;
 import com.pqb.motor_rental.repositories.ContractRepository;
 import com.pqb.motor_rental.repositories.RentalRepository;
 import com.pqb.motor_rental.repositories.UserRepository;
 import com.pqb.motor_rental.security.CustomUserDetails;
 import com.pqb.motor_rental.services.RentalService;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +44,7 @@ public class RentalServiceImpl implements RentalService {
         Rental rental = new Rental();
         rental.setRenter(renter);
         rental.setRentalContract(contract);
+        rental.setStatus(RentalStatus.pending);
         rental.setCreatedAt(LocalDateTime.now());
 
         rentalRepository.save(rental);
@@ -49,7 +53,28 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public List<Rental> getAllRentalsByUser(Long userId) {
-        return rentalRepository.findByRenter(userId);
+        return rentalRepository.findByRenter_UserId(userId);
+    }
+
+    @Override
+    public void updateRentalAvailable(CustomUserDetails userDetails, Long rentalId, RentalUpdateRequest dto) {
+
+        User currentUser = userRepository.findByEmail(userDetails.getUser().getEmail())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+
+        Rental rental = rentalRepository.findById(rentalId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy rental"));
+
+        if (!rental.getRenter().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("Bạn không có quyền cập nhật đơn thuê này");
+        }
+
+        rental.setStatus(RentalStatus.active);
+        rental.setStartDate(dto.getStartDate());
+        rental.setEndDate(dto.getEndDate());
+        rental.setUpdatedAt(LocalDateTime.now());
+        rental.setTotalPrice(dto.getTotalAmount());
+        rentalRepository.save(rental);
     }
 
 

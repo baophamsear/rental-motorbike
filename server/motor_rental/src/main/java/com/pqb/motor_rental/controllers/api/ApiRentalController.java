@@ -1,6 +1,7 @@
 package com.pqb.motor_rental.controllers.api;
 
 import com.pqb.motor_rental.dto.RentalRequest;
+import com.pqb.motor_rental.dto.RentalUpdateRequest;
 import com.pqb.motor_rental.entities.Motorbike;
 import com.pqb.motor_rental.entities.Rental;
 import com.pqb.motor_rental.entities.RentalContract;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +39,17 @@ public class ApiRentalController {
         Long myUserId = userIdInt.longValue();
         List<Rental> rentals = rentalService.getAllRentalsByUser(myUserId);
         return ResponseEntity.ok(rentals);
+    }
+
+    @PatchMapping("/{rentalId}")
+    @PreAuthorize("hasRole('renter')")
+    public ResponseEntity<?> updateRental(
+            @PathVariable Long rentalId,
+            @RequestBody RentalUpdateRequest dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        rentalService.updateRentalAvailable(userDetails, rentalId, dto);
+        return ResponseEntity.ok("Cập nhật thành công");
     }
 
 //    @GetMapping("/my")

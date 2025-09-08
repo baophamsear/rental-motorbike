@@ -80,4 +80,15 @@ public class ApiContractController {
         return ResponseEntity.ok(contractService.getActiveContracts());
     }
 
+    @GetMapping("/nearby")
+    public ResponseEntity<?> getNearbyContracts(
+            @RequestParam double lat,
+            @RequestParam double lng,
+            @RequestParam(defaultValue = "5") double radiusKm
+    ) {
+        List<RentalContract> contracts = contractService.getContractsNearby(lat, lng, radiusKm);
+
+        return ResponseEntity.ok(contracts);
+    }
+
 }

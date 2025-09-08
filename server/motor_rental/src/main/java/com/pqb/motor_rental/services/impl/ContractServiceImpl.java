@@ -8,6 +8,7 @@ import com.pqb.motor_rental.entities.User;
 import com.pqb.motor_rental.enums.BikeStatus;
 import com.pqb.motor_rental.enums.BrandServiceFee;
 import com.pqb.motor_rental.enums.ContractStatus;
+import com.pqb.motor_rental.repositories.ContractRepository;
 import com.pqb.motor_rental.repositories.MotorbikeRepository;
 import com.pqb.motor_rental.repositories.RentalContractRepository;
 import com.pqb.motor_rental.repositories.UserRepository;
@@ -21,15 +22,19 @@ import java.util.List;
 @Service
 public class ContractServiceImpl implements ContractService {
 
-    private RentalContractRepository contractRepository;
+    private RentalContractRepository rentalContractRepository;
     private MotorbikeRepository motorbikeRepository;
     private UserRepository userRepository;
+    private ContractRepository contractRepository;
 
-    public ContractServiceImpl(RentalContractRepository contractRepository,
-                               MotorbikeRepository motorbikeRepository, UserRepository userRepository) {
-        this.contractRepository = contractRepository;
+
+    public ContractServiceImpl(RentalContractRepository rentalContractRepository,
+                               MotorbikeRepository motorbikeRepository, UserRepository userRepository,
+                               ContractRepository contractRepository) {
+        this.rentalContractRepository = rentalContractRepository;
         this.motorbikeRepository = motorbikeRepository;
         this.userRepository = userRepository;
+        this.contractRepository = contractRepository;
     }
 
 
@@ -45,7 +50,7 @@ public class ContractServiceImpl implements ContractService {
             throw new RuntimeException("Motorbike is not available");
         }
 
-        boolean hasActive = contractRepository.existsByBikeAndStatus(bike, ContractStatus.active);
+        boolean hasActive = rentalContractRepository.existsByBikeAndStatus(bike, ContractStatus.active);
         if (hasActive){
             throw new RuntimeException("Contract already exists");
         }
@@ -62,20 +67,20 @@ public class ContractServiceImpl implements ContractService {
         contract.setStartDate(rentalContract.getStartDate());
         contract.setEndDate(rentalContract.getEndDate());
 
-        contractRepository.save(contract);
+        rentalContractRepository.save(contract);
         return contract;
     }
 
     // Lấy danh sách các contract đang ở trạng thái pending
     @Override
     public List<RentalContract> getPendingContracts() {
-        return contractRepository.findByStatus(ContractStatus.pending);
+        return rentalContractRepository.findByStatus(ContractStatus.pending);
     }
 
     // Cập nhật lại contract
     @Override
     public RentalContract approveContract(Long contractId, User adminUser) {
-        RentalContract contract = contractRepository.findById(contractId)
+        RentalContract contract = rentalContractRepository.findById(contractId)
                 .orElseThrow(() -> new RuntimeException("Contract not found"));
 
         if (contract.getStatus() != ContractStatus.pending){
@@ -86,7 +91,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setApprovedBy(adminUser);
         contract.setApprovedAt(LocalDateTime.now());
 
-        return contractRepository.save(contract);
+        return rentalContractRepository.save(contract);
     }
 
     @Override
@@ -115,17 +120,17 @@ public class ContractServiceImpl implements ContractService {
             contracts.add(c);
         }
 
-        return contractRepository.saveAll(contracts);
+        return rentalContractRepository.saveAll(contracts);
     }
 
     @Override
     public List<RentalContract> getContractsByUserId(Integer userId) {
-        return contractRepository.findByLessor(userRepository.getUserByUserId(userId));
+        return rentalContractRepository.findByLessor(userRepository.getUserByUserId(userId));
     }
 
     @Override
     public void updateContractFromLessor(Long contractId, ContractUpdateRequest dto, Integer userId) {
-        RentalContract contract = contractRepository.findById(contractId)
+        RentalContract contract = rentalContractRepository.findById(contractId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hợp đồng"));
 
 //        if (!contract.getLessor().getUserId().equals(userId)) {
@@ -152,17 +157,17 @@ public class ContractServiceImpl implements ContractService {
             newLoc.setAddress(locReq.getAddress());
             contract.setLocation(newLoc);
         }
-        contractRepository.save(contract);
+        rentalContractRepository.save(contract);
     }
 
     @Override
     public List<RentalContract> getAllContracts() {
-        return contractRepository.findAll();
+        return rentalContractRepository.findAll();
     }
 
     @Override
     public void updateActiveContractStatus(Long contractId) {
-        RentalContract contract = contractRepository.findById(contractId)
+        RentalContract contract = rentalContractRepository.findById(contractId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hợp đồng"));
 
         if (contract.getStatus() == ContractStatus.active) {
@@ -170,12 +175,17 @@ public class ContractServiceImpl implements ContractService {
         }
 
         contract.setStatus(ContractStatus.active);
-        contractRepository.save(contract);
+        rentalContractRepository.save(contract);
     }
 
     @Override
     public List<RentalContract> getActiveContracts() {
-        return contractRepository.findByStatus(ContractStatus.active);
+        return rentalContractRepository.findByStatus(ContractStatus.active);
+    }
+
+    @Override
+    public List<RentalContract> getContractsNearby(double lat, double lng, double radiusKm) {
+        return contractRepository.findNearbyContracts(lat, lng, radiusKm);
     }
 
 }

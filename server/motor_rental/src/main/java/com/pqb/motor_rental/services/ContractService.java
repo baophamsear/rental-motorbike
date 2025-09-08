@@ -17,4 +17,5 @@ public interface ContractService {
     List<RentalContract> getAllContracts();
     void updateActiveContractStatus(Long contractId);
     List<RentalContract> getActiveContracts();
+    List<RentalContract> getContractsNearby(double lat, double lng, double radiusKm);
 }
