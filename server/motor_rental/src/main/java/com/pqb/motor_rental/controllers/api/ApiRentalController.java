@@ -1,6 +1,7 @@
 package com.pqb.motor_rental.controllers.api;
 
 import com.pqb.motor_rental.dto.RentalRequest;
+import com.pqb.motor_rental.entities.Motorbike;
 import com.pqb.motor_rental.entities.Rental;
 import com.pqb.motor_rental.entities.RentalContract;
 import com.pqb.motor_rental.security.CustomUserDetails;
@@ -29,4 +30,19 @@ public class ApiRentalController {
         Rental rental = rentalService.createRental(request, userDetails);
         return ResponseEntity.ok(Map.of("rentalId", rental.getRentalId()));
     }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<Rental>> getRentalsByUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Integer userIdInt = userDetails.getUser().getUserId();
+        Long myUserId = userIdInt.longValue();
+        List<Rental> rentals = rentalService.getAllRentalsByUser(myUserId);
+        return ResponseEntity.ok(rentals);
+    }
+
+//    @GetMapping("/my")
+//    public ResponseEntity<List<Motorbike>> getMotorByUserId(@AuthenticationPrincipal CustomUserDetails userDetails){
+//        Integer userIdInt = userDetails.getUser().getUserId();
+//        Long myUserId = userIdInt.longValue();
+//        return ResponseEntity.ok(motorbikeService.getMotorbikesByUserId(myUserId));
+//    }
 }

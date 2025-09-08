@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class RentalServiceImpl implements RentalService {
@@ -40,13 +41,15 @@ public class RentalServiceImpl implements RentalService {
         Rental rental = new Rental();
         rental.setRenter(renter);
         rental.setRentalContract(contract);
-        rental.setStartDate(request.getStartDate());
-        rental.setEndDate(request.getEndDate());
-        rental.setTotalPrice(request.getTotalPrice());
         rental.setCreatedAt(LocalDateTime.now());
 
         rentalRepository.save(rental);
         return rental;
+    }
+
+    @Override
+    public List<Rental> getAllRentalsByUser(Long userId) {
+        return rentalRepository.findByRenter(userId);
     }
 
 

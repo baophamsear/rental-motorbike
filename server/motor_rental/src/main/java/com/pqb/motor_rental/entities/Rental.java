@@ -51,6 +51,7 @@ public class Rental {
     private RentalStatus status;
 
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     private PickupType pickupType;
@@ -160,5 +161,13 @@ public class Rental {
 
     public void setPickupType(PickupType pickupType) {
         this.pickupType = pickupType;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

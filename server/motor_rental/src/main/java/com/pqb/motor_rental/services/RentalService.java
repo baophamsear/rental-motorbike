@@ -5,6 +5,9 @@ import com.pqb.motor_rental.entities.Rental;
 import com.pqb.motor_rental.security.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.List;
+
 public interface RentalService {
     Rental createRental(RentalRequest request, CustomUserDetails userDetails);
+    List<Rental> getAllRentalsByUser(Long userId);
 }

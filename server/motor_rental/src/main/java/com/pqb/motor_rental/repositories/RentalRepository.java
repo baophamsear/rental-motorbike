@@ -4,5 +4,8 @@ import com.pqb.motor_rental.entities.Rental;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 public interface RentalRepository extends JpaRepository<Rental, Long> {
+    List<Rental> findByRenter(Long userId);
 }
