@@ -16,4 +16,5 @@ public interface MotorbikeService {
     void updateStatuses(BikeStatusUpdateRequest request);
     void updateMotorAvailable(Long motorbikeId);
     List<Motorbike> getAvailableMotorbikes();
+    List<Motorbike> getMotorbikesNearby(double lat, double lng, double radiusKm);
 }

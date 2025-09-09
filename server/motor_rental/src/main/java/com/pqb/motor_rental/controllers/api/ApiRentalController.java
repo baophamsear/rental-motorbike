@@ -52,6 +52,12 @@ public class ApiRentalController {
         return ResponseEntity.ok("Cập nhật thành công");
     }
 
+    @GetMapping("/renter/pending")
+    @PreAuthorize("hasRole('lessor')")
+    public ResponseEntity<?> getPendingRentals(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<Rental> rentals = rentalService.getPendingRentalsByLessor(userDetails.getUser().getUserId());
+        return ResponseEntity.ok(rentals);
+    }
 //    @GetMapping("/my")
 //    public ResponseEntity<List<Motorbike>> getMotorByUserId(@AuthenticationPrincipal CustomUserDetails userDetails){
 //        Integer userIdInt = userDetails.getUser().getUserId();

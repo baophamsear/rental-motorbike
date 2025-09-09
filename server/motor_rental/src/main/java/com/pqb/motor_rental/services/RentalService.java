@@ -12,4 +12,5 @@ public interface RentalService {
     Rental createRental(RentalRequest request, CustomUserDetails userDetails);
     List<Rental> getAllRentalsByUser(Long userId);
     void updateRentalAvailable(CustomUserDetails userDetails, Long rentalId, RentalUpdateRequest dto);
+    List<Rental> getPendingRentalsByLessor(Integer userId);
 }

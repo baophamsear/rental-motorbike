@@ -77,5 +77,10 @@ public class RentalServiceImpl implements RentalService {
         rentalRepository.save(rental);
     }
 
+    @Override
+    public List<Rental> getPendingRentalsByLessor(Integer userId) {
+        return rentalRepository.findByStatusAndContract_Lessor_UserId(RentalStatus.pending, userId);
+    }
+
 
 }

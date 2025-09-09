@@ -124,5 +124,16 @@ public class ApiMotorbikeController {
         return ResponseEntity.ok(motorbikeService.getAllMotorbikes());
     }
 
+
+    @GetMapping("/nearby")
+    public ResponseEntity<List<Motorbike>> getNearbyMotorbikes(
+            @RequestParam double lat,
+            @RequestParam double lng,
+            @RequestParam(defaultValue = "5") double radiusKm
+    ) {
+        List<Motorbike> bikes = motorbikeService.getMotorbikesNearby(lat, lng, radiusKm);
+        return ResponseEntity.ok(bikes);
+    }
+
 }
 

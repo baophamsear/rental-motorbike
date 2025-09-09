@@ -109,4 +109,10 @@ public class MotorbikeServiceImpl implements MotorbikeService {
         return motorbikeRepository.findByStatus(BikeStatus.available);
     }
 
+    @Override
+    public List<Motorbike> getMotorbikesNearby(double lat, double lng, double radiusKm) {
+        return motorbikeRepository. findNearbyMotorbikes(lat, lng, radiusKm);
+    }
+
+
 }
