@@ -1,10 +1,12 @@
 package com.pqb.motor_rental.controllers.api;
 
 import com.pqb.motor_rental.dto.RentalRequest;
+import com.pqb.motor_rental.dto.RentalStatusUpdateRequest;
 import com.pqb.motor_rental.dto.RentalUpdateRequest;
 import com.pqb.motor_rental.entities.Motorbike;
 import com.pqb.motor_rental.entities.Rental;
 import com.pqb.motor_rental.entities.RentalContract;
+import com.pqb.motor_rental.enums.RentalStatus;
 import com.pqb.motor_rental.security.CustomUserDetails;
 import com.pqb.motor_rental.services.RentalService;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +60,35 @@ public class ApiRentalController {
         List<Rental> rentals = rentalService.getPendingRentalsByLessor(userDetails.getUser().getUserId());
         return ResponseEntity.ok(rentals);
     }
+
+
+    @GetMapping("/{rentalId}")
+    @PreAuthorize("hasRole('lessor')") // hoặc 'renter' nếu cần
+    public ResponseEntity<?> getRentalDetail(
+            @PathVariable Integer rentalId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Rental rental = rentalService.getRentalByIdAndLessor(rentalId, userDetails.getUser().getUserId());
+        return ResponseEntity.ok(rental);
+    }
+
+
+    @PatchMapping("/{rentalId}/status")
+    @PreAuthorize("hasRole('lessor')")
+    public ResponseEntity<?> updateRentalStatus(
+            @PathVariable Integer rentalId,
+            @RequestBody(required = false) RentalStatusUpdateRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        RentalStatus status = (request != null && request.getStatus() != null)
+                ? request.getStatus()
+                : RentalStatus.pending;
+
+        rentalService.updateRentalStatusByLessor(rentalId, userDetails.getUser().getUserId(), status);
+        return ResponseEntity.ok("Cập nhật trạng thái đơn thuê thành công.");
+    }
+
+
 //    @GetMapping("/my")
 //    public ResponseEntity<List<Motorbike>> getMotorByUserId(@AuthenticationPrincipal CustomUserDetails userDetails){
 //        Integer userIdInt = userDetails.getUser().getUserId();

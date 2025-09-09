@@ -79,8 +79,26 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public List<Rental> getPendingRentalsByLessor(Integer userId) {
-        return rentalRepository.findByStatusAndContract_Lessor_UserId(RentalStatus.pending, userId);
+        return rentalRepository.findByStatusAndRentalContract_Lessor_UserId(RentalStatus.pending, userId);
     }
+
+    @Override
+    public Rental getRentalByIdAndLessor(Integer rentalId, Integer userId) {
+        return rentalRepository.findByIdAndLessor(rentalId, userId)
+                .orElseThrow(() -> new AccessDeniedException("Không tìm thấy hoặc bạn không có quyền xem đơn thuê này."));
+    }
+
+    @Override
+    public void updateRentalStatusByLessor(Integer rentalId, Integer lessorId, RentalStatus status) {
+        Rental rental = rentalRepository.findByIdAndLessor(rentalId, lessorId)
+                .orElseThrow(() -> new AccessDeniedException("Bạn không có quyền cập nhật đơn thuê này"));
+
+        rental.setStatus(status); // status sẽ là 'pending' nếu không truyền gì
+        rental.setUpdatedAt(LocalDateTime.now());
+
+        rentalRepository.save(rental);
+    }
+
 
 
 }
