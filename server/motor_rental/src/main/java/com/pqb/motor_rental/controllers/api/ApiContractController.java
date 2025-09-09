@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,6 +90,28 @@ public class ApiContractController {
         List<RentalContract> contracts = contractService.getContractsNearby(lat, lng, radiusKm);
 
         return ResponseEntity.ok(contracts);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<String> createContract(@RequestBody RentalContract rentalContract) {
+        RentalContract contract = contractService.createContract(rentalContract);
+        return ResponseEntity.ok("Contract created successfully and is pending!");
+    }
+
+    @GetMapping("/pending")
+    public ResponseEntity<List<RentalContract>> getPendingContract() {
+        List<RentalContract> contracts = contractService.getPendingContracts();
+        return ResponseEntity.ok(contracts);
+    }
+
+    public ResponseEntity<String> approveContract(@PathVariable Long id, Authentication authentication) {
+
+        // Lấy thông tin admin từ token
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User admin = userDetails.getUser();
+
+        RentalContract approved = contractService.approveContract(id, admin);
+        return ResponseEntity.ok("Contract approved successfully");
     }
 
 }

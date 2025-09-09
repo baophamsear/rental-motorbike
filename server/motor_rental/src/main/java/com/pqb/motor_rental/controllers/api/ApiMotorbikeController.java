@@ -84,10 +84,12 @@ public class ApiMotorbikeController {
 
     // Phương thức lấy những xe nào mà nó có giá trị status là "pending"
     @GetMapping("/pending")
+    @PreAuthorize("hasRole('admin')")
     public ResponseEntity<List<Motorbike>> getPendingMotorbikes(){
         List<Motorbike> motorbikeList = motorbikeService.findByStatus(BikeStatus.pending);
         return ResponseEntity.ok(motorbikeList);
     }
+
 
 
     // Phương thức để cập nhật lại trạng thái của motorbike
@@ -106,6 +108,7 @@ public class ApiMotorbikeController {
     }
 
     @PatchMapping("/status")
+    @PreAuthorize("hasRole('lessor')")
     public ResponseEntity<?> updateBikesStatus(@RequestBody BikeStatusUpdateRequest request){
         motorbikeService.updateStatuses(request);
         return ResponseEntity.ok("Updated " + request.getBikeIds().size() + " motorbikes.");

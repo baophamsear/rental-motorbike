@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface RentalRepository extends JpaRepository<Rental, Long> {
     List<Rental> findByRenter_UserId(Long userId);
     List<Rental> findByStatusAndRentalContract_Lessor_UserId(RentalStatus status, Integer userId);
+    List<Rental> findByRentalContract_Lessor_UserId(Integer userId);
 
     @Query("""
     SELECT r FROM Rental r

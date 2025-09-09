@@ -83,6 +83,31 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    public List<Rental> getConfirmedRentalsByLessor(Integer userId) {
+        return rentalRepository.findByStatusAndRentalContract_Lessor_UserId(RentalStatus.confirmed, userId);
+    }
+
+    @Override
+    public List<Rental> getActiveRentalsByLessor(Integer userId) {
+        return rentalRepository.findByStatusAndRentalContract_Lessor_UserId(RentalStatus.active, userId);
+    }
+
+    @Override
+    public List<Rental> getCompletedRentalsByLessor(Integer userId) {
+        return rentalRepository.findByStatusAndRentalContract_Lessor_UserId(RentalStatus.active, userId);
+    }
+
+    @Override
+    public List<Rental> getCancelledRentalsByLessor(Integer userId) {
+        return rentalRepository.findByStatusAndRentalContract_Lessor_UserId(RentalStatus.cancelled, userId);
+    }
+
+    @Override
+    public List<Rental> getAllRentalsByLessor(Integer lessorId) {
+        return rentalRepository.findByRentalContract_Lessor_UserId(lessorId);
+    }
+
+    @Override
     public Rental getRentalByIdAndLessor(Integer rentalId, Integer userId) {
         return rentalRepository.findByIdAndLessor(rentalId, userId)
                 .orElseThrow(() -> new AccessDeniedException("Không tìm thấy hoặc bạn không có quyền xem đơn thuê này."));

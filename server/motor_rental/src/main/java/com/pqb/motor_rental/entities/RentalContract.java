@@ -49,7 +49,7 @@ public class RentalContract {
 
     private LocalDateTime updatedAt;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_id")
     private LocationPoint location;
 

@@ -14,6 +14,12 @@ public interface RentalService {
     List<Rental> getAllRentalsByUser(Long userId);
     void updateRentalAvailable(CustomUserDetails userDetails, Long rentalId, RentalUpdateRequest dto);
     List<Rental> getPendingRentalsByLessor(Integer lessorId);
+    List<Rental> getConfirmedRentalsByLessor(Integer lessorId);
+    List<Rental> getActiveRentalsByLessor(Integer lessorId);
+    List<Rental> getCompletedRentalsByLessor(Integer lessorId);
+    List<Rental> getCancelledRentalsByLessor(Integer lessorId);
+    List<Rental> getAllRentalsByLessor(Integer lessorId);
+
     Rental getRentalByIdAndLessor(Integer rentalId, Integer userId);
     void updateRentalStatusByLessor(Integer rentalId, Integer lessorId, RentalStatus status);
 }

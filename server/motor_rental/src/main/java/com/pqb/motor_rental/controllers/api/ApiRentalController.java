@@ -54,10 +54,31 @@ public class ApiRentalController {
         return ResponseEntity.ok("Cập nhật thành công");
     }
 
-    @GetMapping("/renter/pending")
+    @GetMapping("/pending")
     @PreAuthorize("hasRole('lessor')")
     public ResponseEntity<?> getPendingRentals(@AuthenticationPrincipal CustomUserDetails userDetails) {
         List<Rental> rentals = rentalService.getPendingRentalsByLessor(userDetails.getUser().getUserId());
+        return ResponseEntity.ok(rentals);
+    }
+
+    @GetMapping("/confirmed")
+    @PreAuthorize("hasRole('lessor')")
+    public ResponseEntity<?> getConfirmedRentals(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<Rental> rentals = rentalService.getConfirmedRentalsByLessor(userDetails.getUser().getUserId());
+        return ResponseEntity.ok(rentals);
+    }
+
+    @GetMapping("/active")
+    @PreAuthorize("hasRole('lessor')")
+    public ResponseEntity<?> getActiveRentals(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<Rental> rentals = rentalService.getActiveRentalsByLessor(userDetails.getUser().getUserId());
+        return ResponseEntity.ok(rentals);
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('lessor')")
+    public ResponseEntity<?> getAllRentals(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<Rental> rentals = rentalService.getAllRentalsByLessor(userDetails.getUser().getUserId());
         return ResponseEntity.ok(rentals);
     }
 
