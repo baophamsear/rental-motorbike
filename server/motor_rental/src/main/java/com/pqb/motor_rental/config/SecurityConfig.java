@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .cors(cors -> {}) // dùng bean CorsConfigurationSource ở trên
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/ws/**").permitAll()
 //                                .requestMatchers("/api/momo/**").permitAll()
 //                        .requestMatchers("/api/bikes/**").permitAll()
                         .requestMatchers("/api/brands/**").permitAll()

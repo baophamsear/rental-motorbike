@@ -1,15 +1,18 @@
 package com.pqb.motor_rental.controllers.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pqb.motor_rental.dto.BikeNotificationDTO;
 import com.pqb.motor_rental.dto.BikeStatusUpdateRequest;
 import com.pqb.motor_rental.entities.Motorbike;
 import com.pqb.motor_rental.enums.BikeStatus;
 import com.pqb.motor_rental.security.CustomUserDetails;
 import com.pqb.motor_rental.services.CloudinaryService;
 import com.pqb.motor_rental.services.MotorbikeService;
+import com.pqb.motor_rental.services.NotificationService;
 import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/bikes")
 public class ApiMotorbikeController {
+
+    @Autowired
+    private NotificationService notificationService;
 
     private static final Logger log = LoggerFactory.getLogger(ApiMotorbikeController.class);
     private final MotorbikeService motorbikeService;
@@ -45,7 +51,7 @@ public class ApiMotorbikeController {
             @RequestPart("licenseImages") List<MultipartFile> licenseImages,
             Principal principal) {
         try {
-            String email = principal.getName(); // Lấy email từ token
+            String  email = principal.getName(); // Lấy email từ token
             ObjectMapper mapper = new ObjectMapper();
             Motorbike motorbike = mapper.readValue(motorbikeJson, Motorbike.class);
 
@@ -64,7 +70,19 @@ public class ApiMotorbikeController {
 
             motorbike.setStatus(BikeStatus.pending);
 
-            motorbikeService.createMotorbike(motorbike, email);
+            Motorbike savedBike = motorbikeService.createMotorbike(motorbike, email);
+
+
+            BikeNotificationDTO notification = new BikeNotificationDTO(
+                    savedBike.getBikeId(),
+                    savedBike.getName(),
+                    email,
+                    savedBike.getStatus().toString()
+            );
+            notificationService.notifyAdminBikeSubmitted(notification);
+            System.out.println("✅ Đã tạo xe thành công, chuẩn bị gửi noti tới admin...");
+
+
             return ResponseEntity.ok("Đăng xe thành công");
         }catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -136,6 +154,15 @@ public class ApiMotorbikeController {
     ) {
         List<Motorbike> bikes = motorbikeService.getMotorbikesNearby(lat, lng, radiusKm);
         return ResponseEntity.ok(bikes);
+    }
+
+
+    @GetMapping("/test-ws")
+    @PreAuthorize("hasRole('lessor')")
+    public ResponseEntity<?> testWs() {
+        BikeNotificationDTO dto = new BikeNotificationDTO(1, "Exciter TEST", "test@admin.com", "pending");
+        notificationService.notifyAdminBikeSubmitted(dto);
+        return ResponseEntity.ok("✅ Đã gửi thử WebSocket");
     }
 
 }

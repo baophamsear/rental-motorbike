@@ -26,7 +26,7 @@ public class MotorbikeServiceImpl implements MotorbikeService {
     }
 
     @Override
-    public void createMotorbike(Motorbike motorbike, String email) {
+    public Motorbike createMotorbike(Motorbike motorbike, String email) {
         User lessor = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!lessor.getRole().name().equals("lessor")) {
@@ -42,6 +42,7 @@ public class MotorbikeServiceImpl implements MotorbikeService {
         mtbk.setLocation(motorbike.getLocation());
         mtbk.setStatus(BikeStatus.pending);
         motorbikeRepository.save(mtbk);
+        return mtbk;
     }
 
     @Override
