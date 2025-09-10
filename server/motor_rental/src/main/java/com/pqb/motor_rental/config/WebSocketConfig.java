@@ -11,15 +11,15 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic"); // nơi client đăng ký nhận
-        config.setApplicationDestinationPrefixes("/app"); // nơi client gửi
+        config.enableSimpleBroker("/topic", "/queue");
+        config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws") // endpoint kết nối WebSocket
-                .setAllowedOriginPatterns("*")
-                .withSockJS(); // fallback cho trình duyệt cũ
+        registry
+                .addEndpoint("/ws")
+                .setAllowedOriginPatterns("http://localhost:5173")
+                .withSockJS();
     }
 }
-

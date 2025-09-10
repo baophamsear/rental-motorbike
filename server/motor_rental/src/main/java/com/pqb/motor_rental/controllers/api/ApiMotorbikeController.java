@@ -158,7 +158,7 @@ public class ApiMotorbikeController {
 
 
     @GetMapping("/test-ws")
-    @PreAuthorize("hasRole('lessor')")
+//    @PreAuthorize("hasRole('lessor')")
     public ResponseEntity<?> testWs() {
         BikeNotificationDTO dto = new BikeNotificationDTO(1, "Exciter TEST", "test@admin.com", "pending");
         notificationService.notifyAdminBikeSubmitted(dto);
