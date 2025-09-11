@@ -44,7 +44,6 @@ public class ApiMotorbikeController {
 
     // Phương thức đẩy thông tin của 1 xe lên
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    @PostMapping
     public ResponseEntity<String> postBike(
             @RequestPart("motorbike") String motorbikeJson,
             @RequestPart("motorImages") List<MultipartFile> motorImages,
@@ -70,16 +69,9 @@ public class ApiMotorbikeController {
 
             motorbike.setStatus(BikeStatus.pending);
 
-            Motorbike savedBike = motorbikeService.createMotorbike(motorbike, email);
+            motorbikeService.createMotorbike(motorbike, email);
 
-
-            BikeNotificationDTO notification = new BikeNotificationDTO(
-                    savedBike.getBikeId(),
-                    savedBike.getName(),
-                    email,
-                    savedBike.getStatus().toString()
-            );
-            notificationService.notifyAdminBikeSubmitted(notification);
+            notificationService.notifyAdminBikeSubmitted();
             System.out.println("✅ Đã tạo xe thành công, chuẩn bị gửi noti tới admin...");
 
 
@@ -115,6 +107,7 @@ public class ApiMotorbikeController {
     public ResponseEntity<String> approveMotorbike(@PathVariable Long id){
         Motorbike approved = motorbikeService.approveMotorbike(id);
         return ResponseEntity.ok("Motorbike " + approved.toString() + " approved successfully.");
+
     }
 
     // Lấy danh sách các motor của 1 user
@@ -126,7 +119,8 @@ public class ApiMotorbikeController {
     }
 
     @PatchMapping("/status")
-    @PreAuthorize("hasRole('lessor')")
+    @PreAuthorize("hasRole('admin')")
+//    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<?> updateBikesStatus(@RequestBody BikeStatusUpdateRequest request){
         motorbikeService.updateStatuses(request);
         return ResponseEntity.ok("Updated " + request.getBikeIds().size() + " motorbikes.");
@@ -157,13 +151,6 @@ public class ApiMotorbikeController {
     }
 
 
-    @GetMapping("/test-ws")
-//    @PreAuthorize("hasRole('lessor')")
-    public ResponseEntity<?> testWs() {
-        BikeNotificationDTO dto = new BikeNotificationDTO(1, "Exciter TEST", "test@admin.com", "pending");
-        notificationService.notifyAdminBikeSubmitted(dto);
-        return ResponseEntity.ok("✅ Đã gửi thử WebSocket");
-    }
 
 }
 

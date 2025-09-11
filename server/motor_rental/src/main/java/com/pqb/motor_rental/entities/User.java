@@ -18,6 +18,7 @@ public class User {
     private String phone;
     private String password;
 
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -38,10 +39,14 @@ public class User {
     private String verificationCode;
 
     private LocalDateTime codeExpiry;
+    private String pushToken;
 
     public User() {}
 
-    public User(Integer userId, String fullName, String email, String phone, String password, Role role, String avatarUrl, AccountStatus accountStatus, LocalDateTime createdAt, String violationNote, LocalDateTime limitedUntil, Boolean isVerified, String verificationCode, LocalDateTime codeExpiry) {
+    public User(Integer userId, String fullName, String email, String phone, String password, Role role,
+                String avatarUrl, AccountStatus accountStatus, LocalDateTime createdAt, String violationNote,
+                LocalDateTime limitedUntil, Boolean isVerified, String verificationCode, LocalDateTime codeExpiry,
+                String pushToken) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
@@ -56,6 +61,7 @@ public class User {
         this.isVerified = isVerified;
         this.verificationCode = verificationCode;
         this.codeExpiry = codeExpiry;
+        this.pushToken = pushToken;
     }
 
     public Integer getUserId() {
@@ -168,5 +174,13 @@ public class User {
 
     public void setCodeExpiry(LocalDateTime codeExpiry) {
         this.codeExpiry = codeExpiry;
+    }
+
+    public String getPushToken() {
+        return pushToken;
+    }
+
+    public void setPushToken(String pushToken) {
+        this.pushToken = pushToken;
     }
 }

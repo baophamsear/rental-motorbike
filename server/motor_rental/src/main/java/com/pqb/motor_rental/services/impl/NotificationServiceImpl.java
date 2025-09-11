@@ -1,10 +1,15 @@
 package com.pqb.motor_rental.services.impl;
 
 import com.pqb.motor_rental.dto.BikeNotificationDTO;
+import com.pqb.motor_rental.entities.Motorbike;
+import com.pqb.motor_rental.entities.RentalContract;
 import com.pqb.motor_rental.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Service
@@ -14,12 +19,14 @@ public class NotificationServiceImpl implements NotificationService {
     private SimpMessagingTemplate messagingTemplate;
 
     @Override
-    public void notifyAdminBikeSubmitted(BikeNotificationDTO dto) {
+    public void notifyAdminBikeSubmitted() {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("message", "New bike submitted");
+        messagingTemplate.convertAndSend("/topic/admin-bike-notifications", payload);
+    }
 
-        System.out.println("📤 Sending WebSocket message to admin...");
-        System.out.println("📨 Bike: " + dto.getBikeName() + " | Owner: " + dto.getOwnerEmail());
-
-
-        messagingTemplate.convertAndSend("/topic/admin-bike-notifications", dto);
+    @Override
+    public void initContract(RentalContract contract, String notification) {
+        messagingTemplate.convertAndSend("/topic/notifications/init-contract" + contract.getLessor().getUserId(), notification);
     }
 }

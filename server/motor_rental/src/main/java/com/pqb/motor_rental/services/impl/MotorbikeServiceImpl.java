@@ -82,7 +82,7 @@ public class MotorbikeServiceImpl implements MotorbikeService {
 
     @Override
     public void updateStatuses(BikeStatusUpdateRequest request) {
-        List<Motorbike> bikes = motorbikeRepository.findAllById(request.getBikeIds());
+        List<Motorbike> bikes = motorbikeRepository.findAllById((request.getBikeIds()));
         for (Motorbike motorbike: bikes) {
             motorbike.setStatus(BikeStatus.valueOf(request.getStatus()));
             if ("rejected".equals(request.getStatus()) && request.getRejectionReason() != null) {

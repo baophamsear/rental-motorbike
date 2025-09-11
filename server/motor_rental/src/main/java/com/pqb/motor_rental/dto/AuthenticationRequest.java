@@ -9,6 +9,8 @@ public class AuthenticationRequest {
         this.password = password;
     }
 
+    public AuthenticationRequest(){}
+
     public String getEmail() {
         return email;
     }
