@@ -9,6 +9,7 @@ import com.pqb.motor_rental.entities.Motorbike;
 import com.pqb.motor_rental.entities.Notification;
 import com.pqb.motor_rental.entities.RentalContract;
 import com.pqb.motor_rental.entities.User;
+import com.pqb.motor_rental.repositories.ContractRepository;
 import com.pqb.motor_rental.repositories.NotificationRepository;
 import com.pqb.motor_rental.repositories.UserRepository;
 import com.pqb.motor_rental.security.CustomUserDetails;
@@ -49,6 +50,7 @@ public class ApiContractController {
     private final SimpMessagingTemplate messagingTemplate; // Thêm để gửi qua WebSocket
     private final RestTemplate restTemplate; // Thay OkHttpClient bằng RestTemplate
     private final ObjectMapper objectMapper; // Để serialize JSON
+    private final ContractRepository contractRepository;
 
     @Autowired
     public ApiContractController(
@@ -58,7 +60,7 @@ public class ApiContractController {
             UserRepository userRepository,
             SimpMessagingTemplate messagingTemplate,
             RestTemplate restTemplate,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper, ContractRepository contractRepository) {
         this.contractService = contractService;
         this.notificationRepository = notificationRepository;
         this.notificationService = notificationService;
@@ -66,6 +68,7 @@ public class ApiContractController {
         this.messagingTemplate = messagingTemplate;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.contractRepository = contractRepository;
     }
 
     @PostMapping("/init-multiple")
@@ -84,7 +87,8 @@ public class ApiContractController {
         for (RentalContract contract : created) {
             Notification notification = new Notification();
             notification.setUserId(contract.getLessor().getUserId());
-            notification.setMessage("Hợp đồng cho xe của bạn (" + contract.getBike().getName() + ") đã được duyệt! " +
+            notification.setMessage("Hợp đồng cho xe của bạn (" + contract.getBike().getName() + ") đã khởi tạo thành công! " +
+                    "Vui lòng cập nhật thông tin và gởi lại!" +
                     "Hãy nhanh chóng cập nhật thông tin!");
             notification.setTimestamp(LocalDateTime.now());
 
@@ -150,6 +154,35 @@ public class ApiContractController {
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<?> updateContractActived(@PathVariable Long id) {
         contractService.updateActiveContractStatus(id);
+
+        RentalContract contract = contractRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy hợp đồng!"));
+
+        Notification noti = new Notification();
+        noti.setUserId(contract.getLessor().getUserId());
+        noti.setMessage("Hợp đồng cho xe của bạn (Xe: " + contract.getBike().getName() + ") đã được duyệt thành công!");
+        noti.setTimestamp(LocalDateTime.now());
+
+        try {
+            notificationRepository.save(noti);
+            log.info("Saved notification to repository: {}", noti.getMessage());
+        } catch (Exception e) {
+            log.error("Error saving notification: {}", e.getMessage());
+        }
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("id", noti.getId());
+        payload.put("message", noti.getMessage());
+        payload.put("timestamp", noti.getTimestamp().toString());
+        payload.put("userId", noti.getUserId());
+
+        String topic = "/topic/notifications/active-contract" + contract.getLessor().getUserId();
+        try {
+            messagingTemplate.convertAndSend(topic, payload);
+            log.info("Sent notification to {}: {}", topic, payload);
+        } catch (Exception e) {
+            log.error("Error sending notification to {}: {}", topic, e.getMessage());
+        }
+
         return ResponseEntity.ok("Cập nhật hợp đồng thành công!");
     }
 
@@ -182,30 +215,55 @@ public class ApiContractController {
         return ResponseEntity.ok(contracts);
     }
 
-    public ResponseEntity<String> approveContract(@PathVariable Long id, Authentication authentication) {
+    @PatchMapping("/{contractId}/reject")
+    @PreAuthorize("hasRole('admin')")
+    public ResponseEntity<?> rejectContract(
+            @PathVariable Long contractId,
+            @RequestBody Map<String, String> body) {
 
-        // Lấy thông tin admin từ token
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User admin = userDetails.getUser();
+        String rejectReason = body.get("rejectReason");
+        if (rejectReason == null || rejectReason.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Lý do từ chối không được để trống");
+        }
 
-        RentalContract approved = contractService.approveContract(id, admin);
-        return ResponseEntity.ok("Contract approved successfully");
+        // Cập nhật trạng thái reject
+        RentalContract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hợp đồng!"));
+
+        contractService.rejectContract(contractId, rejectReason);
+
+        // Tạo notification
+        Notification noti = new Notification();
+        noti.setUserId(contract.getLessor().getUserId());
+        noti.setMessage("Hợp đồng cho xe của bạn (Xe: " + contract.getBike().getName() +
+                ") đã bị từ chối. Lý do: " + rejectReason);
+        noti.setTimestamp(LocalDateTime.now());
+
+        try {
+            notificationRepository.save(noti);
+            log.info("Saved notification to repository: {}", noti.getMessage());
+        } catch (Exception e) {
+            log.error("Error saving notification: {}", e.getMessage());
+        }
+
+        // Chuẩn bị payload cho WebSocket
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("id", noti.getId());
+        payload.put("message", noti.getMessage());
+        payload.put("timestamp", noti.getTimestamp().toString());
+        payload.put("userId", noti.getUserId());
+
+        // Chủ đề reject riêng biệt
+        String topic = "/topic/notifications/reject-contract" + contract.getLessor().getUserId();
+        try {
+            messagingTemplate.convertAndSend(topic, payload);
+            log.info("Sent reject notification to {}: {}", topic, payload);
+        } catch (Exception e) {
+            log.error("Error sending reject notification to {}: {}", topic, e.getMessage());
+        }
+
+        return ResponseEntity.ok("Hợp đồng đã bị từ chối với lý do: " + rejectReason);
     }
 
-//    private void sendPushNotificationsInBatch(List<Map<String, String>> notifications) {
-//        try {
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_JSON);
-//            HttpEntity<String> entity = new HttpEntity<>(objectMapper.writeValueAsString(notifications), headers);
-//            ResponseEntity<String> response = restTemplate.postForEntity(
-//                    "https://exp.host/--/api/v2/push/send",
-//                    entity,
-//                    String.class
-//            );
-//            log.info("Gửi thông báo đẩy hàng loạt thành công: {}", response.getStatusCode());
-//        } catch (Exception e) {
-//            log.error("Lỗi khi gửi thông báo đẩy hàng loạt: {}", e.getMessage());
-//        }
-//    }
 
 }

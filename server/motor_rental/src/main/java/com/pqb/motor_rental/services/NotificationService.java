@@ -11,4 +11,8 @@ public interface NotificationService {
 
     // khởi thông báo khi admin duyệt xe xong
     void initContract(RentalContract contract, String notification);
+
+    void activeContract(RentalContract contract, String notification);
+
+    void rejectContract(RentalContract contract, String notification);
 }

@@ -18,4 +18,5 @@ public interface ContractService {
     void updateActiveContractStatus(Long contractId);
     List<RentalContract> getActiveContracts();
     List<RentalContract> getContractsNearby(double lat, double lng, double radiusKm);
+    void rejectContract(Long contractId, String rejectedReason);
 }

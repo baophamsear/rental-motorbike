@@ -29,4 +29,14 @@ public class NotificationServiceImpl implements NotificationService {
     public void initContract(RentalContract contract, String notification) {
         messagingTemplate.convertAndSend("/topic/notifications/init-contract" + contract.getLessor().getUserId(), notification);
     }
+
+    @Override
+    public void activeContract(RentalContract contract, String notification) {
+        messagingTemplate.convertAndSend("/topic/notifications/active-contract" + contract.getLessor().getUserId(), notification);
+    }
+
+    @Override
+    public void rejectContract(RentalContract contract, String notification) {
+        messagingTemplate.convertAndSend("/topic/notifications/reject-contract" + contract.getLessor().getUserId(), notification);
+    }
 }

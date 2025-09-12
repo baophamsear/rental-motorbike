@@ -13,11 +13,17 @@ import com.pqb.motor_rental.repositories.MotorbikeRepository;
 import com.pqb.motor_rental.repositories.RentalContractRepository;
 import com.pqb.motor_rental.repositories.UserRepository;
 import com.pqb.motor_rental.services.ContractService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ContractServiceImpl implements ContractService {
@@ -187,5 +193,16 @@ public class ContractServiceImpl implements ContractService {
     public List<RentalContract> getContractsNearby(double lat, double lng, double radiusKm) {
         return contractRepository.findNearbyContracts(lat, lng, radiusKm);
     }
+
+    @Override
+    public void rejectContract(Long contractId, String rejectedReason) {
+        RentalContract contract = rentalContractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hợp đồng"));
+
+        contract.setStatus(ContractStatus.rejected);
+        contract.setRejectedReason(rejectedReason);
+        rentalContractRepository.save(contract);
+    }
+
 
 }

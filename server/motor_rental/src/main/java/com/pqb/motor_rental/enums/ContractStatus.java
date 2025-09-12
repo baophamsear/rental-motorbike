@@ -4,7 +4,7 @@ public enum ContractStatus {
     pending,
     updated,
     active,
-    expired,
+    rejected,
     cancel_requested,
     cancelled
 }

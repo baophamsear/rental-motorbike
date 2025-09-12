@@ -53,6 +53,8 @@ public class RentalContract {
     @JoinColumn(name = "location_id")
     private LocationPoint location;
 
+    private String rejectedReason;
+
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
@@ -156,6 +158,14 @@ public class RentalContract {
 
     public void setLocation(LocationPoint location) {
         this.location = location;
+    }
+
+    public String getRejectedReason() {
+        return rejectedReason;
+    }
+
+    public void setRejectedReason(String rejectedReason) {
+        this.rejectedReason = rejectedReason;
     }
 }
 
