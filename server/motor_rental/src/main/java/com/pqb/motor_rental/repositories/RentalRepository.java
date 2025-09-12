@@ -23,5 +23,15 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     Optional<Rental> findByIdAndLessor(@Param("rentalId") Integer rentalId, @Param("userId") Integer userId);
 
 
+    @Query("""
+    SELECT r FROM Rental r
+    WHERE r.rentalId = :rentalId
+      AND r.renter.userId = :userId
+    """)
+    Optional<Rental> findByIdAndRenter(@Param("rentalId") Integer rentalId, @Param("userId") Integer userId);
+
+
+
+
 
 }

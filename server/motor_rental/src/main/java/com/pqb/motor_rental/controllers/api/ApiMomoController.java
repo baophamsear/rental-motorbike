@@ -7,7 +7,6 @@ import com.pqb.motor_rental.enums.PaymentMethod;
 import com.pqb.motor_rental.enums.PaymentStatus;
 import com.pqb.motor_rental.repositories.PaymentRepository;
 import com.pqb.motor_rental.repositories.RentalRepository;
-import com.pqb.motor_rental.services.impl.MotorbikeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;

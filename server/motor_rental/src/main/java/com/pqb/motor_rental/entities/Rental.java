@@ -1,10 +1,11 @@
 package com.pqb.motor_rental.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.pqb.motor_rental.enums.PickupType;
+import com.pqb.motor_rental.enums.RentalPaymentStatus;
 import com.pqb.motor_rental.enums.RentalStatus;
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -29,6 +30,7 @@ public class Rental {
 
     @ManyToOne
     @JoinColumn(name = "rental_contract_id")
+//    @JsonBackReference(value = "contract-rentals")
     private RentalContract rentalContract;
 
 
@@ -59,7 +61,12 @@ public class Rental {
     @OneToOne(mappedBy = "rental", cascade = CascadeType.ALL)
     private Payment payment;
 
-    public Rental(Integer rentalId, User renter, RentalContract rentalContract, LocalDate startDate, LocalDate endDate, Location pickupLocation, Location returnLocation, Double totalPrice, RentalStatus status, LocalDateTime createdAt, PickupType pickupType) {
+    @Enumerated(EnumType.STRING)
+    private RentalPaymentStatus paymentStatus;
+
+    public Rental(Integer rentalId, User renter, RentalContract rentalContract, LocalDate startDate, LocalDate endDate,
+                  Location pickupLocation, Location returnLocation, Double totalPrice, RentalStatus status, LocalDateTime createdAt,
+                  PickupType pickupType, Payment payment, RentalPaymentStatus paymentStatus) {
         this.rentalId = rentalId;
         this.renter = renter;
         this.rentalContract = rentalContract;
@@ -71,9 +78,27 @@ public class Rental {
         this.status = status;
         this.createdAt = createdAt;
         this.pickupType = pickupType;
+        this.payment = payment;
+        this.paymentStatus = paymentStatus;
     }
 
     public Rental() {}
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public RentalPaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(RentalPaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
 
     public Integer getRentalId() {
         return rentalId;

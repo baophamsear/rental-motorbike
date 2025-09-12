@@ -7,9 +7,7 @@ import com.pqb.motor_rental.enums.PaymentStatus;
 import com.pqb.motor_rental.repositories.PaymentRepository;
 import com.pqb.motor_rental.services.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;

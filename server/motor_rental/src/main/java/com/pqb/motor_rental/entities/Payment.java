@@ -1,10 +1,10 @@
 package com.pqb.motor_rental.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pqb.motor_rental.enums.PaymentMethod;
 import com.pqb.motor_rental.enums.PaymentStatus;
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,6 +29,7 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name = "rental_id", unique = true)
+    @JsonIgnore
     private Rental rental;
 
     @Column(unique = true)

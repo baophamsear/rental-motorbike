@@ -114,6 +114,12 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    public Rental getRentalByIdAndRenter(Integer rentalId, Integer userId) {
+        return rentalRepository.findByIdAndRenter(rentalId, userId)
+                .orElseThrow(() -> new AccessDeniedException("Không tìm thấy hoặc bạn không có quyền xem đơn thuê này."));
+    }
+
+    @Override
     public void updateRentalStatusByLessor(Integer rentalId, Integer lessorId, RentalStatus status) {
         Rental rental = rentalRepository.findByIdAndLessor(rentalId, lessorId)
                 .orElseThrow(() -> new AccessDeniedException("Bạn không có quyền cập nhật đơn thuê này"));

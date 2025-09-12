@@ -21,5 +21,6 @@ public interface RentalService {
     List<Rental> getAllRentalsByLessor(Integer lessorId);
 
     Rental getRentalByIdAndLessor(Integer rentalId, Integer userId);
+    Rental getRentalByIdAndRenter(Integer rentalId, Integer userId);
     void updateRentalStatusByLessor(Integer rentalId, Integer lessorId, RentalStatus status);
 }

@@ -1,5 +1,7 @@
 package com.pqb.motor_rental.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pqb.motor_rental.enums.ContractStatus;
 import com.pqb.motor_rental.enums.PaymentCycle;
 import jakarta.persistence.*;
@@ -7,6 +9,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "rental_contracts")
@@ -19,6 +22,10 @@ public class RentalContract {
     @ManyToOne
     @JoinColumn(name = "lessor_id")
     private User lessor;
+
+    @OneToMany(mappedBy = "rentalContract", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Rental> rentals;
 
     @ManyToOne
     @JoinColumn(name = "bike_id")
