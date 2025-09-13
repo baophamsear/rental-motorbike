@@ -2,9 +2,12 @@ package com.pqb.motor_rental.services.impl;
 
 import com.pqb.motor_rental.dto.RentalRequest;
 import com.pqb.motor_rental.dto.RentalUpdateRequest;
+import com.pqb.motor_rental.entities.Motorbike;
 import com.pqb.motor_rental.entities.Rental;
 import com.pqb.motor_rental.entities.RentalContract;
 import com.pqb.motor_rental.entities.User;
+import com.pqb.motor_rental.enums.BikeStatus;
+import com.pqb.motor_rental.enums.RentalPaymentStatus;
 import com.pqb.motor_rental.enums.RentalStatus;
 import com.pqb.motor_rental.repositories.ContractRepository;
 import com.pqb.motor_rental.repositories.RentalRepository;
@@ -47,6 +50,8 @@ public class RentalServiceImpl implements RentalService {
         rental.setStatus(RentalStatus.pending);
         rental.setCreatedAt(LocalDateTime.now());
 
+
+
         rentalRepository.save(rental);
         return rental;
     }
@@ -69,11 +74,15 @@ public class RentalServiceImpl implements RentalService {
             throw new AccessDeniedException("Bạn không có quyền cập nhật đơn thuê này");
         }
 
-        rental.setStatus(RentalStatus.active);
+//        rental.setStatus(RentalStatus.active);
+        Motorbike bike = rental.getRentalContract().getBike();
+
+        bike.setStatus(BikeStatus.rented);
         rental.setStartDate(dto.getStartDate());
         rental.setEndDate(dto.getEndDate());
         rental.setUpdatedAt(LocalDateTime.now());
         rental.setTotalPrice(dto.getTotalAmount());
+        rental.setPaymentStatus(RentalPaymentStatus.paid);
         rentalRepository.save(rental);
     }
 
@@ -106,6 +115,11 @@ public class RentalServiceImpl implements RentalService {
     public List<Rental> getAllRentalsByLessor(Integer lessorId) {
         return rentalRepository.findByRentalContract_Lessor_UserId(lessorId);
     }
+
+//    @Override
+//    public Rental findRentalById(Long id) {
+//        return rentalRepository.findById(id);
+//    }
 
     @Override
     public Rental getRentalByIdAndLessor(Integer rentalId, Integer userId) {

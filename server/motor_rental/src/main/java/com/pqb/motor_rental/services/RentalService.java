@@ -19,6 +19,7 @@ public interface RentalService {
     List<Rental> getCompletedRentalsByLessor(Integer lessorId);
     List<Rental> getCancelledRentalsByLessor(Integer lessorId);
     List<Rental> getAllRentalsByLessor(Integer lessorId);
+//    Rental findRentalById(Long id);
 
     Rental getRentalByIdAndLessor(Integer rentalId, Integer userId);
     Rental getRentalByIdAndRenter(Integer rentalId, Integer userId);

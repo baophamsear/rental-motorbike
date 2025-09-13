@@ -1,19 +1,21 @@
 package com.pqb.motor_rental.controllers.api;
 
 import com.pqb.motor_rental.dto.*;
-import com.pqb.motor_rental.entities.Motorbike;
-import com.pqb.motor_rental.entities.Rental;
-import com.pqb.motor_rental.entities.RentalContract;
+import com.pqb.motor_rental.entities.*;
 import com.pqb.motor_rental.enums.RentalPaymentStatus;
 import com.pqb.motor_rental.enums.RentalStatus;
+import com.pqb.motor_rental.repositories.NotificationRepository;
 import com.pqb.motor_rental.repositories.RentalRepository;
 import com.pqb.motor_rental.security.CustomUserDetails;
 import com.pqb.motor_rental.services.MotorbikeService;
+import com.pqb.motor_rental.services.NotificationService;
 import com.pqb.motor_rental.services.RentalService;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -22,24 +24,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.*;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/rentals")
 public class ApiRentalController {
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
     private final RentalService rentalService;
     private final RentalRepository rentalRepository;
     private final MotorbikeService motorbikeService;
+    private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     public ApiRentalController(RentalService rentalService, RentalRepository rentalRepository,
-                               MotorbikeService motorbikeService) {
+                               MotorbikeService motorbikeService, NotificationRepository notificationRepository,
+                               NotificationService notificationService) {
         this.rentalService = rentalService;
         this.rentalRepository = rentalRepository;
         this.motorbikeService = motorbikeService;
+        this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
     }
 
     @PostMapping
@@ -47,6 +54,35 @@ public class ApiRentalController {
     public ResponseEntity<?> createRental(@RequestBody RentalRequest request,
                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
         Rental rental = rentalService.createRental(request, userDetails);
+
+        RentalContract contract = rental.getRentalContract();
+
+        // Tạo notification
+        Notification noti = new Notification();
+        noti.setUserId(contract.getLessor().getUserId());
+        noti.setMessage("Nhận được đơn thuê mới từ xe " + contract.getBike().getName() + " !");
+        noti.setTimestamp(LocalDateTime.now());
+
+        notificationRepository.save(noti);
+
+
+        // Chuẩn bị payload cho WebSocket
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("id", noti.getId());
+        payload.put("message", noti.getMessage());
+        payload.put("timestamp", noti.getTimestamp().toString());
+        payload.put("userId", noti.getUserId());
+
+
+        String topic = "/topic/notifications/create-rental" + contract.getLessor().getUserId();
+        try {
+            messagingTemplate.convertAndSend(topic, payload);
+
+        } catch (Exception e) {
+
+        }
+
+
         return ResponseEntity.ok(Map.of("rentalId", rental.getRentalId()));
     }
 
@@ -133,6 +169,38 @@ public class ApiRentalController {
                 : RentalStatus.pending;
 
         rentalService.updateRentalStatusByLessor(rentalId, userDetails.getUser().getUserId(), status);
+
+        Rental rental = rentalRepository.findById(Long.valueOf(rentalId)).orElse(null);
+        assert rental != null;
+        RentalContract contract = rental.getRentalContract();
+
+
+        String message;
+
+        switch (status) {
+            case confirmed:
+                message = "Chủ xe đã xác nhận cho thuê xe " + contract.getBike().getName() + "!";
+                break;
+            case active:
+                message = "Hợp đồng thuê xe " + contract.getBike().getName() + " đang hoạt động.";
+                break;
+            case completed:
+                message = "Hợp đồng thuê xe " + contract.getBike().getName() + " đã hoàn tất.";
+                break;
+            case cancelled:
+                message = "Đơn thuê xe " + contract.getBike().getName() + " đã bị hủy/kết thúc.";
+                break;
+            default:
+                message = "Trạng thái của đơn thuê xe " + contract.getBike().getName() + " đã thay đổi.";
+                break;
+        }
+
+        notificationService.sendNotification(
+                rental.getRenter().getUserId(),
+                message,
+                status
+        );
+
         return ResponseEntity.ok("Cập nhật trạng thái đơn thuê thành công.");
     }
 

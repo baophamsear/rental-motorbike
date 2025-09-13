@@ -1,8 +1,8 @@
 package com.pqb.motor_rental.services;
 
 import com.pqb.motor_rental.dto.BikeNotificationDTO;
-import com.pqb.motor_rental.entities.Motorbike;
-import com.pqb.motor_rental.entities.RentalContract;
+import com.pqb.motor_rental.entities.*;
+import com.pqb.motor_rental.enums.RentalStatus;
 import org.springframework.stereotype.Service;
 
 
@@ -15,4 +15,8 @@ public interface NotificationService {
     void activeContract(RentalContract contract, String notification);
 
     void rejectContract(RentalContract contract, String notification);
+
+    void createRental(RentalContract contract, Notification notification);
+
+    void sendNotification(Integer userId, String message, RentalStatus status);
 }

@@ -15,6 +15,8 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     List<Rental> findByStatusAndRentalContract_Lessor_UserId(RentalStatus status, Integer userId);
     List<Rental> findByRentalContract_Lessor_UserId(Integer userId);
 
+
+
     @Query("""
     SELECT r FROM Rental r
     WHERE r.rentalId = :rentalId
