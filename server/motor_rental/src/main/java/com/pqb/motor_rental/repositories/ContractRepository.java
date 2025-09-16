@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface ContractRepository extends JpaRepository<RentalContract, Long> {
     List<RentalContract> findByLessorUserId(Long lessorId);
+    long countByLessor_UserId(Integer lessorId);
+
 
     @Query(value = """
         SELECT c.*

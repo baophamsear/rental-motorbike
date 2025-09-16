@@ -19,4 +19,5 @@ public interface ContractService {
     List<RentalContract> getActiveContracts();
     List<RentalContract> getContractsNearby(double lat, double lng, double radiusKm);
     void rejectContract(Long contractId, String rejectedReason);
+    RentalContract getContractById(Long id);
 }

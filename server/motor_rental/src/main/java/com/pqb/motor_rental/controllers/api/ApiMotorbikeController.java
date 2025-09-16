@@ -13,6 +13,7 @@ import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bikes")
@@ -117,6 +119,33 @@ public class ApiMotorbikeController {
         Long myUserId = userIdInt.longValue();
         return ResponseEntity.ok(motorbikeService.getMotorbikesByUserId(myUserId));
     }
+
+    @GetMapping("/my-bikes")
+    @PreAuthorize("hasRole('lessor')")
+    public ResponseEntity<?> getMotorbikes(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int limit) {
+
+        Page<Motorbike> motorbikes = motorbikeService.getMotorbikesByOwner(
+                userDetails.getUser().getUserId(), page, limit);
+
+        return ResponseEntity.ok(motorbikes);
+    }
+
+    @PostMapping("/get-by-id")
+    public ResponseEntity<?> getMotorbikeById(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody Map<String, Integer> body
+    ) {
+        Integer bikeId = body.get("id");
+        Integer userId = userDetails.getUser().getUserId();
+
+        Motorbike motorbike = motorbikeService.getMotorbikeForOwner(bikeId, userId);
+        return ResponseEntity.ok(motorbike);
+    }
+
+
 
     @PatchMapping("/status")
     @PreAuthorize("hasRole('admin')")

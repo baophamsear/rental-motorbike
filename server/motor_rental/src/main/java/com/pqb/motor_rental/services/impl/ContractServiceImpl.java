@@ -204,5 +204,11 @@ public class ContractServiceImpl implements ContractService {
         rentalContractRepository.save(contract);
     }
 
+    @Override
+    public RentalContract getContractById(Long id) {
+        return contractRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hợp đồng"));
+    }
+
 
 }

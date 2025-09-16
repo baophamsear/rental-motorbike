@@ -14,6 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -105,31 +106,121 @@ public class ApiRentalController {
         return ResponseEntity.ok("Cập nhật thành công");
     }
 
+
+
+
     @GetMapping("/pending")
     @PreAuthorize("hasRole('lessor')")
-    public ResponseEntity<?> getPendingRentals(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<Rental> rentals = rentalService.getPendingRentalsByLessor(userDetails.getUser().getUserId());
+    public ResponseEntity<?> getPendingRentals(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        Page<Rental> rentals = rentalService.getPendingRentalsByLessor(
+                userDetails.getUser().getUserId(),
+                page,
+                limit
+        );
+
         return ResponseEntity.ok(rentals);
     }
+
+
+
 
     @GetMapping("/confirmed")
     @PreAuthorize("hasRole('lessor')")
-    public ResponseEntity<?> getConfirmedRentals(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<Rental> rentals = rentalService.getConfirmedRentalsByLessor(userDetails.getUser().getUserId());
+    public ResponseEntity<?> getConfirmedRentals(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        Page<Rental> rentals = rentalService.getConfirmedRentalsByLessor(
+                userDetails.getUser().getUserId(),
+                page,
+                limit
+        );
+
         return ResponseEntity.ok(rentals);
     }
+
+//    @GetMapping("/active")
+//    @PreAuthorize("hasRole('lessor')")
+//    public ResponseEntity<?> getActiveRentals(@AuthenticationPrincipal CustomUserDetails userDetails) {
+//        List<Rental> rentals = rentalService.getActiveRentalsByLessor(userDetails.getUser().getUserId());
+//        return ResponseEntity.ok(rentals);
+//    }
+
+    @GetMapping("/cancelled")
+    @PreAuthorize("hasRole('lessor')")
+    public ResponseEntity<?> getCancelledRentals(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        Page<Rental> rentals = rentalService.getCancelledRentalsByLessor(
+                userDetails.getUser().getUserId(),
+                page,
+                limit
+        );
+
+        return ResponseEntity.ok(rentals);
+    }
+
+
+    @GetMapping("/completed")
+    @PreAuthorize("hasRole('lessor')")
+    public ResponseEntity<?> getCompletedRentals(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        Page<Rental> rentals = rentalService.getCompletedRentalsByLessor(
+                userDetails.getUser().getUserId(),
+                page,
+                limit
+        );
+
+        return ResponseEntity.ok(rentals);
+    }
+
 
     @GetMapping("/active")
     @PreAuthorize("hasRole('lessor')")
-    public ResponseEntity<?> getActiveRentals(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<Rental> rentals = rentalService.getActiveRentalsByLessor(userDetails.getUser().getUserId());
+    public ResponseEntity<?> getActiveRentals(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        Page<Rental> rentals = rentalService.getActiveRentalsByLessor(
+                userDetails.getUser().getUserId(),
+                page,
+                limit
+        );
+
         return ResponseEntity.ok(rentals);
     }
 
+//    @GetMapping("/all")
+//    @PreAuthorize("hasRole('lessor')")
+//    public ResponseEntity<?> getAllRentals(@AuthenticationPrincipal CustomUserDetails userDetails) {
+//        List<Rental> rentals = rentalService.getAllRentalsByLessor(userDetails.getUser().getUserId());
+//        return ResponseEntity.ok(rentals);
+//    }
+
     @GetMapping("/all")
     @PreAuthorize("hasRole('lessor')")
-    public ResponseEntity<?> getAllRentals(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<Rental> rentals = rentalService.getAllRentalsByLessor(userDetails.getUser().getUserId());
+    public ResponseEntity<?> getAllRentals(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        Page<Rental> rentals = rentalService.getAllRentalsByLessor(
+                userDetails.getUser().getUserId(),
+                page,
+                limit
+        );
+
         return ResponseEntity.ok(rentals);
     }
 
@@ -285,6 +376,16 @@ public class ApiRentalController {
             response.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+
+    @GetMapping("/stats")
+    public ResponseEntity<?> getStats(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Integer lessorId = userDetails.getUser().getUserId();
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("contracts", rentalService.getTotalContractsByLessor(lessorId));
+        stats.put("motorbikes", rentalService.getTotalMotorbikesByLessor(lessorId));
+        return ResponseEntity.ok(stats);
     }
 
 

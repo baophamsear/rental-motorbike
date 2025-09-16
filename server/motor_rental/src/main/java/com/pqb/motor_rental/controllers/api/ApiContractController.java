@@ -19,10 +19,7 @@ import com.pqb.motor_rental.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -263,6 +260,23 @@ public class ApiContractController {
         }
 
         return ResponseEntity.ok("Hợp đồng đã bị từ chối với lý do: " + rejectReason);
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('lessor')")
+    public ResponseEntity<?> getContractById(@PathVariable Long id, Authentication authentication) {
+        RentalContract contract = contractService.getContractById(id);
+
+        // 🔒 Bảo mật: chỉ lessor, renter trong hợp đồng hoặc admin mới xem được
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Integer userId = userDetails.getUser().getUserId();
+
+        if (!contract.getBike().getOwner().getUserId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Bạn không có quyền truy cập hợp đồng này");
+        }
+
+        return ResponseEntity.ok(contract);
     }
 
 

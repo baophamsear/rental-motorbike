@@ -8,6 +8,11 @@ import com.pqb.motor_rental.enums.ContractStatus;
 import com.pqb.motor_rental.repositories.MotorbikeRepository;
 import com.pqb.motor_rental.repositories.UserRepository;
 import com.pqb.motor_rental.services.MotorbikeService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -114,6 +119,20 @@ public class MotorbikeServiceImpl implements MotorbikeService {
     public List<Motorbike> getMotorbikesNearby(double lat, double lng, double radiusKm) {
         return motorbikeRepository. findNearbyMotorbikes(lat, lng, radiusKm);
     }
+
+    @Override
+    public Page<Motorbike> getMotorbikesByOwner(Integer ownerId, int page, int limit) {
+        Pageable pageable = PageRequest.of(page, limit, Sort.by("bikeId").descending());
+        return motorbikeRepository.findByOwner_UserId(ownerId, pageable);
+    }
+
+    @Override
+    public Motorbike getMotorbikeForOwner(Integer bikeId, Integer ownerId) {
+        return motorbikeRepository.findByBikeIdAndOwner_UserId(bikeId, ownerId)
+                .orElseThrow(() -> new AccessDeniedException("Bạn không có quyền xem thông tin xe này hoặc xe không tồn tại"));
+    }
+
+
 
 
 }

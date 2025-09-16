@@ -3,16 +3,21 @@ package com.pqb.motor_rental.repositories;
 import com.pqb.motor_rental.entities.Motorbike;
 import com.pqb.motor_rental.enums.BikeStatus;
 import com.pqb.motor_rental.enums.ContractStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MotorbikeRepository extends JpaRepository<Motorbike, Long> {
     List<Motorbike> findByStatus(BikeStatus status);
     List<Motorbike> findByOwner_UserId(Long userId);
-
+    long countByOwner_UserId(Integer owner);
+    Page<Motorbike> findByOwner_UserId(Integer ownerId, Pageable pageable);
+    Optional<Motorbike> findByBikeIdAndOwner_UserId(Integer bikeId, Integer ownerId);
 
     @Query(value = """
         SELECT m.*

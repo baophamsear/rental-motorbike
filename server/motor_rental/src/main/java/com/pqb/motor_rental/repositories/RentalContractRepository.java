@@ -13,4 +13,5 @@ public interface RentalContractRepository extends JpaRepository<RentalContract, 
     List<RentalContract> findByBike(Motorbike motorbike);
     List<RentalContract> findByStatus(ContractStatus status);
     boolean existsByBikeAndStatus(Motorbike bike, ContractStatus status);
+
 }
