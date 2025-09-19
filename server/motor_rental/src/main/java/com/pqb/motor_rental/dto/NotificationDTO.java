@@ -2,6 +2,7 @@ package com.pqb.motor_rental.dto;
 
 import java.time.LocalDateTime;
 
+// DTO về thông báo đến người dùng
 public class NotificationDTO {
     private Integer userId;
     private String message;

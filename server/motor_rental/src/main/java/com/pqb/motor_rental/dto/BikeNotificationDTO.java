@@ -1,5 +1,6 @@
 package com.pqb.motor_rental.dto;
 
+// NO USE
 public class BikeNotificationDTO {
     private Integer bikeId;
     private String bikeName;

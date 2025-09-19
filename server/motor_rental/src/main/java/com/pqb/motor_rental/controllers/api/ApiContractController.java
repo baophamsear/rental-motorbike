@@ -19,6 +19,9 @@ import com.pqb.motor_rental.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -183,10 +186,21 @@ public class ApiContractController {
         return ResponseEntity.ok("Cập nhật hợp đồng thành công!");
     }
 
+//    @GetMapping("/active")
+//    @PreAuthorize("hasRole('renter')")
+//    public ResponseEntity<List<RentalContract>> getActiveContracts(Principal principal) {
+//        return ResponseEntity.ok(contractService.getActiveContracts());
+//    }
+
     @GetMapping("/active")
     @PreAuthorize("hasRole('renter')")
-    public ResponseEntity<List<RentalContract>> getActiveContracts(Principal principal) {
-        return ResponseEntity.ok(contractService.getActiveContracts());
+    public ResponseEntity<Page<RentalContract>> getActiveContracts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RentalContract> contracts = contractService.getActiveContracts(pageable);
+        return ResponseEntity.ok(contracts);
     }
 
     @GetMapping("/nearby")

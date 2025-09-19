@@ -1,5 +1,6 @@
 package com.pqb.motor_rental.dto;
 
+// Đăng nhập trả về
 public class AuthenticationResponse {
     private String token;
 

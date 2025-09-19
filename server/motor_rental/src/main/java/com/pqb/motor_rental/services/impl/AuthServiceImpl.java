@@ -39,6 +39,7 @@ public class AuthServiceImpl implements AuthService {
         User newUser = new User();
         newUser.setEmail(user.getEmail());
         newUser.setFullName(user.getFullName());
+        // Băm mật khẩu
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setRole(user.getRole());
         newUser.setAvatarUrl(user.getAvatarUrl());

@@ -7,6 +7,7 @@ import com.pqb.motor_rental.entities.Rental;
 import com.pqb.motor_rental.entities.RentalContract;
 import com.pqb.motor_rental.entities.User;
 import com.pqb.motor_rental.enums.BikeStatus;
+import com.pqb.motor_rental.enums.PaymentStatus;
 import com.pqb.motor_rental.enums.RentalPaymentStatus;
 import com.pqb.motor_rental.enums.RentalStatus;
 import com.pqb.motor_rental.repositories.ContractRepository;
@@ -61,8 +62,7 @@ public class RentalServiceImpl implements RentalService {
         rental.setRentalContract(contract);
         rental.setStatus(RentalStatus.pending);
         rental.setCreatedAt(LocalDateTime.now());
-
-
+        rental.setPaymentStatus(RentalPaymentStatus.pending);
 
         rentalRepository.save(rental);
         return rental;

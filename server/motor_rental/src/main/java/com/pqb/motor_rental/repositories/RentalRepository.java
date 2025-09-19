@@ -19,6 +19,7 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
 
 
 
+    // Lấy danh sách các rental theo chủ xe
     @Query("""
     SELECT r FROM Rental r
     WHERE r.rentalId = :rentalId
@@ -27,6 +28,7 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     Optional<Rental> findByIdAndLessor(@Param("rentalId") Integer rentalId, @Param("userId") Integer userId);
 
 
+    // Lấy danh sách người dùng theo renter (người thuê)
     @Query("""
     SELECT r FROM Rental r
     WHERE r.rentalId = :rentalId
@@ -34,6 +36,7 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     """)
     Optional<Rental> findByIdAndRenter(@Param("rentalId") Integer rentalId, @Param("userId") Integer userId);
 
+    // Thống kê doanh thu hàng năm
     @Query("SELECT YEAR(r.startDate), MONTH(r.startDate), SUM(r.totalPrice) " +
             "FROM Rental r " +
             "WHERE r.startDate IS NOT NULL " +
@@ -43,6 +46,7 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     List<Object[]> findRevenueByYearAndMonth();
 
 
+    // Thống kê theo hãng xe
     @Query("SELECT b.brand.brandId, SUM(r.totalPrice) AS totalRevenue " +
             "FROM Rental r JOIN RentalContract rc ON r.rentalContract.contractId = rc.contractId " +
             "JOIN Motorbike b ON rc.bike.bikeId = b.bikeId " +
@@ -68,7 +72,10 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             "FROM Rental r WHERE r.status IN (com.pqb.motor_rental.enums.RentalStatus.completed, com.pqb.motor_rental.enums.RentalStatus.active)")
     List<Object[]> findSummaryStats();
 
+    // Lấy tất cả các rental chủ xe có (phân trang)
     Page<Rental> findByRentalContract_Lessor_UserId(Integer lessorId, Pageable pageable);
+
+    // Lấy theo trạng thái (chủ xe)
     Page<Rental> findByStatusAndRentalContract_Lessor_UserId(
             RentalStatus status,
             Integer lessorId,

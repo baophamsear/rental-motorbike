@@ -15,13 +15,6 @@ import java.util.List;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-//    private final ObjectMapper objectMapper;
-//
-//    @Autowired
-//    public WebSocketConfig(ObjectMapper objectMapper) {
-//        this.objectMapper = objectMapper;
-//    }
-
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic", "/queue");
@@ -33,12 +26,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*");
     }
-
-//    @Override
-//    public boolean configureMessageConverters(List<org.springframework.messaging.converter.MessageConverter> messageConverters) {
-//        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-//        converter.setObjectMapper(objectMapper); // Sử dụng ObjectMapper đã cấu hình
-//        messageConverters.add(converter);
-//        return true; // Giữ các converter mặc định và thêm converter mới
-//    }
 }

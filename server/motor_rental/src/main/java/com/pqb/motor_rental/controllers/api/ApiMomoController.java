@@ -102,7 +102,7 @@ public class ApiMomoController {
 
         // ✅ Convert orderId và amount về kiểu Long
         Long rentalId = Long.parseLong(orderIdStr);
-        Double amount = Double.parseDouble(amountStr);
+        Long amount = Long.parseLong(amountStr);
 
         // ✅ Tìm rental tương ứng
         Optional<Rental> rentalOptional = rentalRepository.findById(rentalId);

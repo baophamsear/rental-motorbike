@@ -4,6 +4,8 @@ import com.pqb.motor_rental.dto.ContractUpdateRequest;
 import com.pqb.motor_rental.entities.RentalContract;
 import com.pqb.motor_rental.entities.User;
 import com.pqb.motor_rental.enums.ContractStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -20,4 +22,5 @@ public interface ContractService {
     List<RentalContract> getContractsNearby(double lat, double lng, double radiusKm);
     void rejectContract(Long contractId, String rejectedReason);
     RentalContract getContractById(Long id);
+    Page<RentalContract> getActiveContracts(Pageable pageable);
 }

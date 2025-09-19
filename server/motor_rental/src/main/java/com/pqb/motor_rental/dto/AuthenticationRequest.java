@@ -1,5 +1,6 @@
 package com.pqb.motor_rental.dto;
 
+// Dùng cho nhận yêu cầu đăng nhập
 public class AuthenticationRequest {
     private String email;
     private String password;

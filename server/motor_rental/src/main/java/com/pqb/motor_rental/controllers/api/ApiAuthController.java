@@ -53,16 +53,8 @@ public class ApiAuthController {
         this.userRepository = userRepository;
     }
 
-//    @PostMapping("/register")
-//    public ResponseEntity<String> register(@RequestBody User user){
-//        try{
-//            authService.register(user);
-//            return ResponseEntity.ok("User registered successfully");
-//        }catch (RuntimeException ex){
-//            return ResponseEntity.badRequest().body(ex.getMessage());
-//        }
-//    }
 
+    // Đăng kí người dùng app
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> register(
             @RequestParam("fullName") String fullName,
@@ -72,10 +64,8 @@ public class ApiAuthController {
             @RequestParam("avatarUrl") MultipartFile avatarFile
     ){
         try{
-            System.out.println("here1");
             // Upload anh len cloudinary
             String imageUrl = cloudinaryService.uploadImage(avatarFile);
-            System.out.println("here2");
             User user = new User();
             user.setFullName(fullName);
             user.setEmail(email);

@@ -13,6 +13,8 @@ public class ContractUpdateRequest {
     private ContractStatus status;
     private LocationPoint locationPoint;
 
+    public ContractUpdateRequest() {}
+
     public ContractUpdateRequest(LocalDate startDate, LocalDate endDate, PaymentCycle paymentCycle, ContractStatus status
     , LocationPoint locationPoint) {
         this.startDate = startDate;

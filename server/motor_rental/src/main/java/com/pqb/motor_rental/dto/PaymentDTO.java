@@ -1,5 +1,6 @@
 package com.pqb.motor_rental.dto;
 
+// VNPay
 public class PaymentDTO {
 
     public static class VNPayResponse {

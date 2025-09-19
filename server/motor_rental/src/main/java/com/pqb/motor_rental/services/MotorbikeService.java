@@ -20,4 +20,5 @@ public interface MotorbikeService {
     List<Motorbike> getMotorbikesNearby(double lat, double lng, double radiusKm);
     Page<Motorbike> getMotorbikesByOwner(Integer ownerId, int page, int limit);
     Motorbike getMotorbikeForOwner(Integer bikeId, Integer ownerId);
+    List<Motorbike> getBikesByLocation(Long locationId);
 }

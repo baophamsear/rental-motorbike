@@ -44,7 +44,7 @@ public class ApiMotorbikeController {
         this.cloudinaryService = cloudinaryService;
     }
 
-    // Phương thức đẩy thông tin của 1 xe lên
+    // Phương thức đăng kí 1 xe
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> postBike(
             @RequestPart("motorbike") String motorbikeJson,
@@ -52,7 +52,7 @@ public class ApiMotorbikeController {
             @RequestPart("licenseImages") List<MultipartFile> licenseImages,
             Principal principal) {
         try {
-            String  email = principal.getName(); // Lấy email từ token
+            String  email = principal.getName();
             ObjectMapper mapper = new ObjectMapper();
             Motorbike motorbike = mapper.readValue(motorbikeJson, Motorbike.class);
 
@@ -179,6 +179,12 @@ public class ApiMotorbikeController {
         return ResponseEntity.ok(bikes);
     }
 
+
+    @GetMapping("/by-location/{locationId}")
+    public ResponseEntity<?> getBikesByLocation(@PathVariable Long locationId) {
+        List<Motorbike> bikes = motorbikeService.getBikesByLocation(locationId);
+        return ResponseEntity.ok(bikes);
+    }
 
 
 }

@@ -132,7 +132,10 @@ public class MotorbikeServiceImpl implements MotorbikeService {
                 .orElseThrow(() -> new AccessDeniedException("Bạn không có quyền xem thông tin xe này hoặc xe không tồn tại"));
     }
 
-
+    @Override
+    public List<Motorbike> getBikesByLocation(Long locationId) {
+        return motorbikeRepository.findByLocation_LocationId(locationId);
+    }
 
 
 }

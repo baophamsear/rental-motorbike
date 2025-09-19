@@ -18,6 +18,8 @@ public interface MotorbikeRepository extends JpaRepository<Motorbike, Long> {
     long countByOwner_UserId(Integer owner);
     Page<Motorbike> findByOwner_UserId(Integer ownerId, Pageable pageable);
     Optional<Motorbike> findByBikeIdAndOwner_UserId(Integer bikeId, Integer ownerId);
+    List<Motorbike> findByLocation_LocationId(Long locationId);
+
 
     @Query(value = """
         SELECT m.*

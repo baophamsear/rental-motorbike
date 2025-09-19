@@ -39,13 +39,7 @@ public class Rental {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @ManyToOne
-    @JoinColumn(name = "pickup_location_id")
-    private Location pickupLocation;
 
-    @ManyToOne
-    @JoinColumn(name = "return_location_id")
-    private Location returnLocation;
 
     private Double totalPrice;
 
@@ -55,8 +49,7 @@ public class Rental {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @Enumerated(EnumType.STRING)
-    private PickupType pickupType;
+
 
     @OneToOne(mappedBy = "rental", cascade = CascadeType.ALL)
     private Payment payment;
@@ -65,19 +58,17 @@ public class Rental {
     private RentalPaymentStatus paymentStatus;
 
     public Rental(Integer rentalId, User renter, RentalContract rentalContract, LocalDate startDate, LocalDate endDate,
-                  Location pickupLocation, Location returnLocation, Double totalPrice, RentalStatus status, LocalDateTime createdAt,
-                  PickupType pickupType, Payment payment, RentalPaymentStatus paymentStatus) {
+                  Double totalPrice, RentalStatus status, LocalDateTime createdAt,
+                  Payment payment, RentalPaymentStatus paymentStatus) {
         this.rentalId = rentalId;
         this.renter = renter;
         this.rentalContract = rentalContract;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.pickupLocation = pickupLocation;
-        this.returnLocation = returnLocation;
+
         this.totalPrice = totalPrice;
         this.status = status;
         this.createdAt = createdAt;
-        this.pickupType = pickupType;
         this.payment = payment;
         this.paymentStatus = paymentStatus;
     }
@@ -140,22 +131,6 @@ public class Rental {
         this.endDate = endDate;
     }
 
-    public Location getPickupLocation() {
-        return pickupLocation;
-    }
-
-    public void setPickupLocation(Location pickupLocation) {
-        this.pickupLocation = pickupLocation;
-    }
-
-    public Location getReturnLocation() {
-        return returnLocation;
-    }
-
-    public void setReturnLocation(Location returnLocation) {
-        this.returnLocation = returnLocation;
-    }
-
     public Double getTotalPrice() {
         return totalPrice;
     }
@@ -180,13 +155,6 @@ public class Rental {
         this.createdAt = createdAt;
     }
 
-    public PickupType getPickupType() {
-        return pickupType;
-    }
-
-    public void setPickupType(PickupType pickupType) {
-        this.pickupType = pickupType;
-    }
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;

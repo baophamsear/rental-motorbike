@@ -4,11 +4,12 @@ import com.pqb.motor_rental.entities.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface UserService {
     List<User> getAllUsers();
     User getUserByUserId(int userId);
     void register(User user);
-
+    Optional<User> findById(Integer userId);
 }

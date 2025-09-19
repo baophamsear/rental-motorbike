@@ -2,6 +2,7 @@ package com.pqb.motor_rental.dto;
 
 import java.util.List;
 
+// Cập nhật trạng thái xe
 public class BikeStatusUpdateRequest {
     private List<Long> bikeIds;
     private String status;

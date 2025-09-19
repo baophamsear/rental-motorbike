@@ -13,6 +13,8 @@ import com.pqb.motor_rental.repositories.MotorbikeRepository;
 import com.pqb.motor_rental.repositories.RentalContractRepository;
 import com.pqb.motor_rental.repositories.UserRepository;
 import com.pqb.motor_rental.services.ContractService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -208,6 +210,11 @@ public class ContractServiceImpl implements ContractService {
     public RentalContract getContractById(Long id) {
         return contractRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hợp đồng"));
+    }
+
+    @Override
+    public Page<RentalContract> getActiveContracts(Pageable pageable) {
+        return contractRepository.findByStatus(ContractStatus.active, pageable);
     }
 
 
