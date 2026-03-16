@@ -1,0 +1,141 @@
+:root{
+  --bg:#ffffff;
+  --border:#eaeaea;
+  --muted:#6b7280;
+  --text:#111827;
+  --primary:#000000;
+}
+
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+body{margin:0;font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; color:var(--text); background:#f7f7f7}
+
+.login-page{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns: 1.2fr 1fr;  /* trái rộng hơn */
+  background:var(--bg);
+}
+
+/* LEFT */
+.login-left{
+  position:relative;
+  padding:24px 28px;
+  border-right:1px solid var(--border);
+  background:#f9fafb;
+  display:flex;
+  flex-direction:column;
+}
+
+.brand{display:flex;align-items:center;gap:10px}
+.logo-dots{display:flex;gap:6px}
+.logo-dots span{
+  width:12px;height:12px;border-radius:50%;
+  background:#9ca3af;
+}
+.brand-text{font-weight:600;color:#111827}
+
+.left-visual{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+}
+.left-visual img{
+  max-width:720px;
+  width:100%;
+  height:auto;
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+/* RIGHT */
+.login-right{
+  position:relative;
+  padding:32px 40px;
+  display:flex;
+  flex-direction:column;
+}
+
+.product-badge{
+  align-self:flex-end;
+  color:#111827;
+  font-size:14px;
+}
+
+.form-wrap{
+  max-width: 420px;
+  margin: 48px auto 0 64px; /* đẩy form vào trong một chút */
+}
+
+.title{
+  font-size:32px;
+  line-height:1.2;
+  margin:0 0 8px 0;
+  font-weight:700;
+}
+.subtitle{
+  margin:0 0 28px 0;
+  color:var(--muted);
+}
+
+.login-form{display:grid;gap:18px}
+
+.field{display:grid;gap:8px}
+.field span{font-size:14px;color:#111827}
+.field input{
+  width:100%;
+  border:none;
+  border-bottom:1px solid #d1d5db;
+  padding:10px 0;
+  background:transparent;
+  outline:none;
+  font-size:15px;
+}
+.field input:focus{border-bottom-color:#111827}
+
+.pwd-box{
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+.pwd-box input{padding-right:40px}
+.pwd-toggle{
+  position:absolute;right:0;top:50%;transform:translateY(-50%);
+  border:none;background:transparent;cursor:pointer;font-size:16px;
+}
+
+.row{display:flex;align-items:center;gap:12px}
+.between{justify-content:space-between}
+
+.checkbox{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px}
+.checkbox input{width:16px;height:16px}
+
+.link{color:#111827;text-decoration:underline;text-underline-offset:3px;font-size:14px}
+
+.btn-primary{
+  width:100%;
+  height:44px;
+  border-radius:8px;
+  border:1px solid #111827;
+  background:#111827;
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+.btn-primary:hover{filter:brightness(.95)}
+
+.signup{
+  text-align:center;
+  color:var(--muted);
+  margin:14px 0 0 0;
+  font-size:14px;
+}
+
+/* Responsive */
+@media (max-width: 1024px){
+  .login-page{grid-template-columns:1fr}
+  .login-left{display:none}
+  .form-wrap{margin:40px auto}
+}

@@ -1,0 +1,47 @@
+.layout {
+  display: flex;
+  height: 100vh;
+  background-color: #eef4ff;
+}
+
+/* Sidebar cố định bên trái */
+.sidebar {
+  width: 220px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+}
+
+/* Phần bên phải gồm Topbar + Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Topbar ngang trên */
+.topbar {
+  height: 60px;
+  background-color: #fff;
+  padding: 10px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Phần nội dung bên dưới Topbar */
+.page-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Grid hiển thị danh sách người dùng */
+.user-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}

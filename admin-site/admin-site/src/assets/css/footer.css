@@ -1,0 +1,86 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 60px;
+  gap: 32px;
+  
+
+  background-color: #f9fafb; /* phù hợp với sidebar và page */
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 200px;
+}
+
+.footer .logo {
+  width: 130px;
+  margin-bottom: 16px;
+}
+
+.footer .desc {
+  color: #6b7280;
+  margin-bottom: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.footer h4 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #111827;
+}
+
+.footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer ul li {
+  margin-bottom: 8px;
+  color: #374151;
+  font-size: 15px;
+}
+
+.footer p {
+  margin-bottom: 8px;
+  color: #4b5563;
+  font-size: 15px;
+}
+
+.footer p strong {
+  color: #111827;
+}
+
+.social-icons {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.icon {
+  background-color: #ef4444;
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.icon:hover {
+  background-color: #dc2626;
+}
+
+.footer-img {
+  width: 100px;
+  margin-top: 16px;
+  border-radius: 8px;
+}

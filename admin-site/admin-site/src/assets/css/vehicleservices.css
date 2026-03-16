@@ -1,0 +1,105 @@
+/* Bố cục chính */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar cố định bên trái */
+.sidebar {
+  width: 250px;
+  background-color: #1e293b;
+  color: white;
+  padding: 20px;
+}
+
+/* Phần bên phải */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f9fafb;
+}
+
+/* Thanh topbar */
+.topbar {
+  background-color: #ffffff;
+  padding: 16px 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Nội dung chính trong trang */
+.page-content {
+  padding: 24px;
+  height: 500px;
+}
+
+/* Dịch vụ */
+.services-container {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  justify-content: center;
+}
+
+.service-card {
+  background-color: white;
+  padding: 24px;
+  border-radius: 16px;
+  width: 300px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+}
+
+.icon-box {
+  background-color: #fee2e2;
+  padding: 16px;
+  border-radius: 16px;
+  width: fit-content;
+  margin-bottom: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.icon-box img {
+  width: 32px;
+  height: 32px;
+  transition: filter 0.3s ease;
+}
+
+.service-card:hover .icon-box img {
+  filter: brightness(0) saturate(100%) invert(22%) sepia(98%) saturate(4400%) hue-rotate(340deg) brightness(90%) contrast(100%);
+}
+
+.service-card h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #111827;
+}
+
+.service-card p {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.main-header {
+  font-size: 24px;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.sub-header {
+  font-size: 16px;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 24px;
+}   
